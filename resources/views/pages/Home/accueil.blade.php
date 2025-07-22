@@ -19,7 +19,7 @@
                     </div>
                 </form>
 
-
+                <!-- Résultats de recherche -->
                 <!-- Résultats de recherche -->
                 <div class="search-results" id="searchResults">
                     @if (!empty($search_query))
@@ -50,9 +50,10 @@
                                                             </button>
                                                         </li>
                                                         <li>
-                                                            <button class="dropdown-item edit-app" data-bs-toggle="modal"
-                                                                data-bs-target="#editAppModal"
-                                                                data-app-id="{{ $app->id }}">
+                                                            <button class="dropdown-item edit-app"
+                                                                data-app-id="{{ $app->id }}"
+                                                                data-app-name="{{ $app->app_name }}" data-bs-toggle="modal"
+                                                                data-bs-target="#editAppModal">
                                                                 <i class="bi bi-pencil-fill me-2"></i>Modifier
                                                             </button>
                                                         </li>
@@ -61,7 +62,8 @@
                                                         </li>
                                                         <li>
                                                             <button class="dropdown-item text-danger delete-app"
-                                                                data-app-id="{{ $app->id }}">
+                                                                data-app-id="{{ $app->id }}"
+                                                                data-app-name="{{ $app->app_name }}">
                                                                 <i class="bi bi-trash-fill me-2"></i>Supprimer
                                                             </button>
                                                         </li>
@@ -79,10 +81,10 @@
                                                     </div>
                                                 @endif
 
-                                                @if (isset($app->adr_serv))
+                                                @if (isset($app->env_prod))
                                                     <div class="d-flex align-items-center">
-                                                        <span class="badge bg-success me-2">SERVER</span>
-                                                        <small class="text-muted">{{ $app->adr_serv }}</small>
+                                                        <span class="badge bg-success me-2">PROD</span>
+                                                        <small class="text-muted">{{ $app->env_prod }}</small>
                                                     </div>
                                                 @endif
                                             </div>
@@ -102,6 +104,8 @@
                     @else
                         <div class="col-12">
                             <div class="text-center py-5">
+                                <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
+                                <h4 class="text-muted mt-3">Recherchez une application</h4>
                                 <p class="text-muted">Utilisez la barre de recherche pour trouver des applications</p>
                             </div>
                         </div>
@@ -242,7 +246,6 @@
         </div>
     </div>
 
-
     <!-- Modal de modification -->
     <div class="modal fade" id="editAppModal" tabindex="-1" aria-labelledby="editAppModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -250,73 +253,74 @@
                 <div class="modal-header bg-light">
                     <h5 class="modal-title" id="editAppModalLabel">
                         <i class="bi bi-pencil-square text-primary me-2"></i>
-                        Modifier Application
+                        Modifier l'application
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="editAppForm" method="POST">
                     @csrf
-                    @method('PUT')
                     <input type="hidden" id="edit_app_id" name="id">
                     <div class="modal-body">
                         <div id="editAppErrors" class="alert alert-danger d-none" role="alert"></div>
                         <div class="row g-3">
-                            <!-- Ligne 1 -->
                             <div class="col-md-6">
                                 <label for="edit_app_name" class="form-label">
-                                    <i class="bi bi-box-seam me-1"></i> Nom de l'application*
+                                    <i class="bi bi-box-seam me-1"></i> Nom de l'application<span
+                                        class="text-danger">*</span>
                                 </label>
                                 <input type="text" class="form-control" id="edit_app_name" name="app_name" required>
                             </div>
 
                             <div class="col-md-6">
                                 <label for="edit_adr_serv" class="form-label">
-                                    <i class="bi bi-hdd-network me-1"></i> Adresse Serveur*
+                                    <i class="bi bi-hdd-network me-1"></i> Adresse Serveur<span
+                                        class="text-danger">*</span>
                                 </label>
                                 <input type="text" class="form-control" id="edit_adr_serv" name="adr_serv" required>
                             </div>
 
-                            <!-- Ligne 2 -->
                             <div class="col-md-4">
                                 <label for="edit_env_dev" class="form-label">
-                                    <i class="bi bi-code-square me-1"></i> Environnement DEV*
+                                    <i class="bi bi-code-square me-1"></i> Environnement DEV<span
+                                        class="text-danger">*</span>
                                 </label>
                                 <input type="text" class="form-control" id="edit_env_dev" name="env_dev" required>
                             </div>
 
                             <div class="col-md-4">
                                 <label for="edit_env_test" class="form-label">
-                                    <i class="bi bi-bug me-1"></i> Environnement TEST*
+                                    <i class="bi bi-bug me-1"></i> Environnement TEST<span class="text-danger">*</span>
                                 </label>
                                 <input type="text" class="form-control" id="edit_env_test" name="env_test" required>
                             </div>
 
                             <div class="col-md-4">
                                 <label for="edit_env_prod" class="form-label">
-                                    <i class="bi bi-check-circle me-1"></i> Environnement PROD*
+                                    <i class="bi bi-check-circle me-1"></i> Environnement PROD<span
+                                        class="text-danger">*</span>
                                 </label>
                                 <input type="text" class="form-control" id="edit_env_prod" name="env_prod" required>
                             </div>
 
-                            <!-- Ligne 3 -->
                             <div class="col-md-6">
                                 <label for="edit_sys_exp" class="form-label">
-                                    <i class="bi bi-pc me-1"></i> Système d'exploitation*
+                                    <i class="bi bi-pc me-1"></i> Système d'exploitation<span class="text-danger">*</span>
                                 </label>
                                 <input type="text" class="form-control" id="edit_sys_exp" name="sys_exp" required>
                             </div>
 
                             <div class="col-md-6">
                                 <label for="edit_lang_dev" class="form-label">
-                                    <i class="bi bi-file-code me-1"></i> Langage de développement*
+                                    <i class="bi bi-file-code me-1"></i> Langage de développement<span
+                                        class="text-danger">*</span>
                                 </label>
                                 <input type="text" class="form-control" id="edit_lang_dev" name="lang_dev" required>
                             </div>
 
-                            <!-- Ligne 4 -->
                             <div class="col-md-6">
                                 <label for="edit_adr_serv_bd" class="form-label">
-                                    <i class="bi bi-database me-1"></i> Adresse Base de Données*
+                                    <i class="bi bi-database me-1"></i> Adresse Base de Données<span
+                                        class="text-danger">*</span>
                                 </label>
                                 <input type="text" class="form-control" id="edit_adr_serv_bd" name="adr_serv_bd"
                                     required>
@@ -324,13 +328,13 @@
 
                             <div class="col-md-6">
                                 <label for="edit_sys_exp_bd" class="form-label">
-                                    <i class="bi bi-server me-1"></i> Système Base de Données*
+                                    <i class="bi bi-server me-1"></i> Système Base de Données<span
+                                        class="text-danger">*</span>
                                 </label>
                                 <input type="text" class="form-control" id="edit_sys_exp_bd" name="sys_exp_bd"
                                     required>
                             </div>
 
-                            <!-- Ligne 5 -->
                             <div class="col-12">
                                 <label for="edit_critical" class="form-label">
                                     <i class="bi bi-exclamation-triangle me-1"></i> Criticité
@@ -359,21 +363,18 @@
     </div>
 
 
-
-
-
 @endsection
 
 @section('script')
-    <!-- Bootstrap Bundle with Popper -->
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- SweetAlert2 CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.10.1/sweetalert2.min.js"
         integrity="sha512-oGPdYZUv人不            integrity="
         sha512-oGPdYZUvNyDCQh0iiS1m6hXB8ZfpjI8hKZdLVJVJZJzJLjn5q0/+qF6mNYWrF8PdQy3vZDUe6nqvlbV5kY6+g=="
-                                                                                                                                                                                                                                        crossorigin="
+                                                                                                                                                                                                                                                                                                                                                            crossorigin="
         anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous">
+    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -384,8 +385,6 @@
             const searchForm = document.getElementById('searchForm');
             const searchResults = document.getElementById('searchResults');
             const createForm = document.querySelector('#createAppModal form');
-            // NOUVELLE LIGNE : Vider le champ de recherche au chargement de la page
-            searchInput.value = '';
 
             // Handle flash messages for non-AJAX submissions
             @if (session('success'))
@@ -396,14 +395,14 @@
                             <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
                             <br><br>
                             <strong>{{ session('success') }}</strong>
-
+                            <br>
+                            <small class="text-muted">La page va se recharger automatiquement</small>
                         </div>
                     `,
                     icon: 'success',
                     showConfirmButton: true,
                     confirmButtonText: 'OK',
                     confirmButtonColor: '#28a745',
-
                     background: '#fff',
                     customClass: {
                         popup: 'animated fadeInUp faster'
@@ -548,16 +547,16 @@
                                         </h5>
 
                                         ${item.adr_serv ? `
-                                                                                                                                                                                                                                                                            <div class="d-flex align-items-center mb-2">
-                                                                                                                                                                                                                                                                                <i class="bi bi-hdd-network me-2 text-muted"></i>
-                                                                                                                                                                                                                                                                                <small class="text-muted">${item.adr_serv}</small>
-                                                                                                                                                                                                                                                                            </div>` : ''}
+                                                                                                                                                                                                                                                                                                                                                                                                <div class="d-flex align-items-center mb-2">
+                                                                                                                                                                                                                                                                                                                                                                                                    <i class="bi bi-hdd-network me-2 text-muted"></i>
+                                                                                                                                                                                                                                                                                                                                                                                                    <small class="text-muted">${item.adr_serv}</small>
+                                                                                                                                                                                                                                                                                                                                                                                                </div>` : ''}
 
                                         ${item.env_prod ? `
-                                                                                                                                                                                                                                                                            <div class="d-flex align-items-center">
-                                                                                                                                                                                                                                                                                <span class="badge bg-success me-2">PROD</span>
-                                                                                                                                                                                                                                                                                <small class="text-muted">${item.env_prod}</small>
-                                                                                                                                                                                                                                                                            </div>` : ''}
+                                                                                                                                                                                                                                                                                                                                                                                                <div class="d-flex align-items-center">
+                                                                                                                                                                                                                                                                                                                                                                                                    <span class="badge bg-success me-2">PROD</span>
+                                                                                                                                                                                                                                                                                                                                                                                                    <small class="text-muted">${item.env_prod}</small>
+                                                                                                                                                                                                                                                                                                                                                                                                </div>` : ''}
                                     </div>
                                 </div>
                             </div>
@@ -579,7 +578,7 @@
                 document.getElementById('searchResults').innerHTML = html;
             }
 
-            // Handle form submission for createAppModal
+
             if (createForm) {
                 createForm.addEventListener('submit', function(e) {
                     e.preventDefault();
@@ -646,7 +645,6 @@
                                     showConfirmButton: true,
                                     confirmButtonText: 'Voir le résultat',
                                     confirmButtonColor: '#28a745',
-
                                     background: '#fff',
                                     customClass: {
                                         popup: 'animated fadeInUp faster'
@@ -718,59 +716,8 @@
                 });
             }
 
-            document.addEventListener('click', function(event) {
-                const editButton = event.target.closest('.edit-app');
-                if (editButton) {
-                    const appId = editButton.getAttribute('data-app-id');
 
-                    // Récupérer les données de l'application via AJAX
-                    fetch(`/catalogue/${appId}/edit`)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error(`HTTP error! status: ${response.status}`);
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            if (!data.success || !data.data) {
-                                throw new Error('Données invalides');
-                            }
 
-                            const app = data.data;
-
-                            // Remplir le formulaire
-                            document.getElementById('edit_app_id').value = app.id;
-                            document.getElementById('edit_app_name').value = app.app_name;
-                            document.getElementById('edit_adr_serv').value = app.adr_serv;
-                            document.getElementById('edit_env_dev').value = app.env_dev;
-                            document.getElementById('edit_env_test').value = app.env_test;
-                            document.getElementById('edit_env_prod').value = app.env_prod;
-                            document.getElementById('edit_sys_exp').value = app.sys_exp;
-                            document.getElementById('edit_lang_dev').value = app.lang_dev;
-                            document.getElementById('edit_adr_serv_bd').value = app.adr_serv_bd;
-                            document.getElementById('edit_sys_exp_bd').value = app.sys_exp_bd;
-                            document.getElementById('edit_critical').value = app.critical ?? '';
-
-                            // Définir l'action du formulaire
-                            document.getElementById('editAppForm').action = `/catalogue/${app.id}`;
-
-                            // Afficher le modal
-                            const modal = new bootstrap.Modal(document.getElementById('editAppModal'));
-                            modal.show();
-                        })
-
-                        .catch(error => {
-                            console.error('Error fetching app data for edit:', error);
-                            Swal.fire({
-                                title: 'Erreur de chargement !',
-                                text: 'Impossible de récupérer les données de l\'application pour l\'édition.',
-                                icon: 'error',
-                                confirmButtonText: 'OK',
-                                confirmButtonColor: '#dc3545',
-                            });
-                        });
-                }
-            });
 
             // Handle app details modal
             document.addEventListener('shown.bs.modal', function(event) {
@@ -793,127 +740,6 @@
                     `;
                 }
             });
-
-            document.getElementById('editAppForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-
-                Swal.fire({
-                    title: 'Confirmer la modification',
-                    text: "Es-tu sûr de vouloir enregistrer ces changements ?",
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#0d6efd',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Oui, modifier',
-                    cancelButtonText: 'Annuler'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        const form = e.target;
-                        const appId = document.getElementById('edit_app_id').value;
-                        const url = `/catalogue/${appId}`;
-                        const formData = new FormData(form);
-
-                        // Nettoyer erreurs précédentes
-                        const errorDiv = document.getElementById('editAppErrors');
-                        errorDiv.classList.add('d-none');
-                        errorDiv.innerHTML = '';
-
-                        fetch(url, {
-                                method: 'POST', // Laravel acceptera via _method
-                                headers: {
-                                    'X-CSRF-TOKEN': form.querySelector('input[name="_token"]')
-                                        .value,
-                                },
-                                body: formData,
-                            })
-                            .then(response => {
-                                if (!response.ok) throw response;
-                                return response.json();
-                            })
-                            .then(data => {
-                                if (data.success) {
-                                    bootstrap.Modal.getInstance(document.getElementById(
-                                        'editAppModal')).hide();
-
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Modification réussie !',
-                                        text: 'L\'application a été mise à jour.',
-                                        confirmButtonColor: '#0d6efd',
-                                    }).then(() => {
-                                        location
-                                            .reload(); // Optionnel : mettre à jour dynamiquement
-                                    });
-                                } else {
-                                    throw new Error(data.message || 'Erreur inconnue');
-                                }
-                            })
-                            .catch(async error => {
-                                let message = 'Erreur lors de la modification.';
-                                if (error instanceof Response) {
-                                    const errData = await error.json();
-                                    if (errData.errors) {
-                                        message = Object.values(errData.errors).flat().join(
-                                            '<br>');
-                                    } else if (errData.message) {
-                                        message = errData.message;
-                                    }
-                                }
-
-                                errorDiv.innerHTML = message;
-                                errorDiv.classList.remove('d-none');
-                            });
-                    }
-                });
-            });
-
-
-
-            document.addEventListener('click', function(e) {
-                if (e.target.closest('.delete-app')) {
-                    const appId = e.target.closest('.delete-app').getAttribute('data-app-id');
-
-                    Swal.fire({
-                        title: 'Confirmer la suppression',
-                        text: "Cette action est irréversible !",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#6c757d',
-                        confirmButtonText: 'Oui, supprimer',
-                        cancelButtonText: 'Annuler'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            fetch(`/catalogue/${appId}/delete`, {
-                                    method: 'DELETE',
-                                    headers: {
-                                        'X-CSRF-TOKEN': document.querySelector(
-                                            'meta[name="csrf-token"]').getAttribute(
-                                            'content'),
-                                        'Accept': 'application/json'
-                                    }
-                                })
-                                .then(res => res.json())
-                                .then(data => {
-                                    if (data.success) {
-                                        Swal.fire('Supprimée !', data.message, 'success');
-                                        // Optionnel : retirer la carte du DOM
-                                        document.querySelector(`[data-app-id="${appId}"]`)
-                                            .closest('.card').remove();
-                                    } else {
-                                        Swal.fire('Erreur', data.message, 'error');
-                                    }
-                                })
-                                .catch(error => {
-                                    Swal.fire('Erreur', 'Erreur serveur.', 'error');
-                                });
-                        }
-                    });
-                }
-            });
-
-
-
 
             // Rafraîchir les recherches récentes dans la sidebar
             function refreshRecentSearches() {
@@ -966,6 +792,197 @@
                     .catch(error => console.error('Erreur:', error));
             }
 
+            // ===== ÉDITION D'APPLICATION =====
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.edit-app')) {
+                    const button = e.target.closest('.edit-app');
+                    const appId = button.dataset.appId;
+
+                    console.log('🔍 Édition app ID:', appId);
+
+                    const editModal = new bootstrap.Modal(document.getElementById('editAppModal'));
+                    const modalBody = document.querySelector('#editAppModal .modal-body');
+                    const originalContent = modalBody.innerHTML;
+
+                    // Spinner de chargement
+                    modalBody.innerHTML = `
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                    </div>
+                    <p class="mt-2">Chargement des données...</p>
+                </div>
+            `;
+
+                    editModal.show();
+
+                    // Charger les données
+                    fetch(`/catalogue/${appId}/edit`, {
+                            method: 'GET', // Explicitement GET
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                    .content
+                            }
+                        })
+                        .then(response => {
+                            console.log('📡 Statut réponse:', response.status);
+                            if (!response.ok) {
+                                throw new Error(`Erreur HTTP: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log('📦 Données reçues:', data);
+
+                            if (!data.success) {
+                                throw new Error(data.message || 'Erreur inconnue');
+                            }
+
+                            // Restaurer le contenu du modal
+                            modalBody.innerHTML = originalContent;
+
+                            // Remplir le formulaire
+                            const appData = data.data;
+                            const fields = [
+                                'app_name', 'adr_serv', 'env_dev', 'env_test', 'env_prod',
+                                'sys_exp', 'lang_dev', 'adr_serv_bd', 'sys_exp_bd', 'critical'
+                            ];
+
+                            fields.forEach(field => {
+                                const element = document.getElementById(`edit_${field}`);
+                                if (element) {
+                                    element.value = appData[field] || '';
+                                }
+                            });
+
+                            // Configurer le formulaire
+                            document.getElementById('edit_app_id').value = appData.id;
+                            const form = document.getElementById('editAppForm');
+                            form.action = `/catalogue/${appData.id}`;
+
+                            // S'assurer que la méthode est correcte
+                            const methodField = form.querySelector('input[name="_method"]');
+                            if (methodField) {
+                                methodField.value = 'PUT';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('❌ Erreur:', error);
+                            modalBody.innerHTML = originalContent;
+                            editModal.hide();
+
+                            Swal.fire({
+                                title: 'Erreur de chargement',
+                                text: error.message,
+                                icon: 'error',
+                                confirmButtonColor: '#dc3545'
+                            });
+                        });
+                }
+            });
+
+            // ===== SOUMISSION DU FORMULAIRE =====
+            document.getElementById('editAppForm')?.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const form = e.target;
+                const formData = new FormData(form);
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn.innerHTML;
+
+                console.log('📝 Soumission formulaire vers:', form.action);
+                console.log('📝 Données:', Object.fromEntries(formData));
+
+                // Désactiver le bouton
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `
+            <span class="spinner-border spinner-border-sm me-1"></span>
+            Enregistrement...
+        `;
+
+                // Indicateur de chargement
+                Swal.fire({
+                    title: 'Mise à jour en cours',
+                    text: 'Veuillez patienter...',
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
+
+                // IMPORTANT: Utiliser POST avec _method=PUT pour Laravel
+                fetch(form.action, {
+                        method: 'POST', // ✅ POST (pas PUT directement)
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            // Pas de Content-Type car FormData le gère automatiquement
+                        }
+                    })
+                    .then(response => {
+                        console.log('📡 Statut mise à jour:', response.status);
+
+                        if (!response.ok) {
+                            // Gestion détaillée des erreurs HTTP
+                            if (response.status === 405) {
+                                throw new Error('Méthode non autorisée. Vérifiez vos routes Laravel.');
+                            } else if (response.status === 404) {
+                                throw new Error('Application non trouvée.');
+                            } else if (response.status === 422) {
+                                // Erreurs de validation
+                                return response.json().then(data => {
+                                    const errors = data.errors ? Object.values(data.errors)
+                                        .flat().join('\n') : data.message;
+                                    throw new Error(errors);
+                                });
+                            } else {
+                                throw new Error(`Erreur serveur: ${response.status}`);
+                            }
+                        }
+
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('✅ Succès:', data);
+
+                        if (!data.success) {
+                            throw new Error(data.message || 'Échec de la mise à jour');
+                        }
+
+                        // Succès
+                        Swal.fire({
+                            title: 'Succès !',
+                            text: data.message || 'Application mise à jour avec succès',
+                            icon: 'success',
+                            confirmButtonColor: '#28a745',
+                            timer: 2000,
+                            timerProgressBar: true
+                        }).then(() => {
+                            // Fermer le modal et recharger
+                            const editModal = bootstrap.Modal.getInstance(document
+                                .getElementById('editAppModal'));
+                            editModal.hide();
+                            location.reload();
+                        });
+                    })
+                    .catch(error => {
+                        console.error('❌ Erreur mise à jour:', error);
+
+                        Swal.fire({
+                            title: 'Erreur',
+                            text: error.message,
+                            icon: 'error',
+                            confirmButtonColor: '#dc3545'
+                        });
+                    })
+                    .finally(() => {
+                        // Restaurer le bouton
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
+                    });
+            });
             // Clic en dehors pour fermer la barre
             document.addEventListener('click', (e) => {
                 if (!searchBox.contains(e.target) && searchInput.value.trim() === '') {

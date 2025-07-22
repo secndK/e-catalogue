@@ -11,6 +11,9 @@ use App\Models\SearchHistory;
 class CatalogueController extends Controller
 {
     /**Cette fonction servira à recupérer l'ensemble des données pour les afficher dans la vue */
+    /**
+     * Cette fonction servira à récupérer l'ensemble des données pour les afficher dans la vue
+     */
     public function getCatalogue()
     {
         $array_catalogue = DB::connection('mysql')->select('SELECT * FROM catalogues LIMIT 12');
@@ -19,7 +22,26 @@ class CatalogueController extends Controller
         return view('pages.Home.accueil', [
             'catalogue' => collect($array_catalogue),
             'recent_searches' => $recentSearches,
-            'search_query' => ''
+            'search_query' => '',
+            'show_all' => false
+        ]);
+    }
+
+    /**
+     * Cette fonction servira à récupérer TOUTES les applications dans la même vue
+     */
+    public function getAllCatalogue()
+    {
+        // Récupérer toutes les applications sans limite
+        $all_catalogue = DB::connection('mysql')->select('SELECT * FROM catalogues');
+        $recentSearches = $this->getRecentSearchesData();
+
+        return view('pages.Home.accueil', [
+            'catalogue' => collect($all_catalogue),
+            'recent_searches' => $recentSearches,
+            'search_query' => '',
+            'show_all' => true,
+            'total_apps' => count($all_catalogue)
         ]);
     }
     /**Cette fonction servira à recupérer l'ensemble des données pour les afficher dans la vue
