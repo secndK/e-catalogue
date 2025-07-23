@@ -697,57 +697,57 @@
                             </h5>
 
                             ${item.adr_serv ? `
-                                                                                                                                <div class="d-flex align-items-center mb-2">
-                                                                                                                                    <i class="bi bi-hdd-network me-2 text-muted"></i>
-                                                                                                                                    <small class="text-muted">${item.adr_serv}</small>
-                                                                                                                                </div>` : ''}
+                                                                                                                                            <div class="d-flex align-items-center mb-2">
+                                                                                                                                                <i class="bi bi-hdd-network me-2 text-muted"></i>
+                                                                                                                                                <small class="text-muted">${item.adr_serv}</small>
+                                                                                                                                            </div>` : ''}
 
                             ${item.env_dev ? `
-                                                                                                                                <div class="d-flex align-items-center mb-2">
-                                                                                                                                    <span class="badge bg-warning text-dark me-2">DEV</span>
-                                                                                                                                    <small class="text-muted">${item.adr_serv_dev}</small>
-                                                                                                                                </div>` : ''}
+                                                                                                                                            <div class="d-flex align-items-center mb-2">
+                                                                                                                                                <span class="badge bg-warning text-dark me-2">DEV</span>
+                                                                                                                                                <small class="text-muted">${item.adr_serv_dev}</small>
+                                                                                                                                            </div>` : ''}
 
                             ${item.env_test ? `
-                                                                                                                                <div class="d-flex align-items-center mb-2">
-                                                                                                                                    <span class="badge bg-info text-dark me-2">TEST</span>
-                                                                                                                                    <small class="text-muted">${item.adr_serv_test}</small>
-                                                                                                                                </div>` : ''}
+                                                                                                                                            <div class="d-flex align-items-center mb-2">
+                                                                                                                                                <span class="badge bg-info text-dark me-2">TEST</span>
+                                                                                                                                                <small class="text-muted">${item.adr_serv_test}</small>
+                                                                                                                                            </div>` : ''}
 
                             ${item.env_prod ? `
-                                                                                                                                <div class="d-flex align-items-center mb-2">
-                                                                                                                                    <span class="badge bg-success me-2">PROD</span>
-                                                                                                                                    <small class="text-muted">${item.adr_serv_prod}</small>
-                                                                                                                                </div>` : ''}
+                                                                                                                                            <div class="d-flex align-items-center mb-2">
+                                                                                                                                                <span class="badge bg-success me-2">PROD</span>
+                                                                                                                                                <small class="text-muted">${item.adr_serv_prod}</small>
+                                                                                                                                            </div>` : ''}
 
                             ${item.sys_exp ? `
-                                                                                                                                <div class="d-flex align-items-center mb-2">
-                                                                                                                                    <i class="bi bi-cpu me-2 text-muted"></i>
-                                                                                                                                    <small class="text-muted">OS : ${item.sys_exp}</small>
-                                                                                                                                </div>` : ''}
+                                                                                                                                            <div class="d-flex align-items-center mb-2">
+                                                                                                                                                <i class="bi bi-cpu me-2 text-muted"></i>
+                                                                                                                                                <small class="text-muted">OS : ${item.sys_exp}</small>
+                                                                                                                                            </div>` : ''}
 
                             ${item.lang_dev ? `
-                                                                                                                                <div class="d-flex align-items-center mb-2">
-                                                                                                                                    <i class="bi bi-code-slash me-2 text-muted"></i>
-                                                                                                                                    <small class="text-muted">Langage : ${item.lang_dev}</small>
-                                                                                                                                </div>` : ''}
+                                                                                                                                            <div class="d-flex align-items-center mb-2">
+                                                                                                                                                <i class="bi bi-code-slash me-2 text-muted"></i>
+                                                                                                                                                <small class="text-muted">Langage : ${item.lang_dev}</small>
+                                                                                                                                            </div>` : ''}
 
                             ${item.adr_serv_bd ? `
-                                                                                                                                <div class="d-flex align-items-center mb-2">
-                                                                                                                                    <i class="bi bi-server me-2 text-muted"></i>
-                                                                                                                                    <small class="text-muted">BD : ${item.adr_serv_bd}</small>
-                                                                                                                                </div>` : ''}
+                                                                                                                                            <div class="d-flex align-items-center mb-2">
+                                                                                                                                                <i class="bi bi-server me-2 text-muted"></i>
+                                                                                                                                                <small class="text-muted">BD : ${item.adr_serv_bd}</small>
+                                                                                                                                            </div>` : ''}
 
                             ${item.sys_exp_bd ? `
-                                                                                                                                <div class="d-flex align-items-center mb-2">
-                                                                                                                                    <i class="bi bi-hdd me-2 text-muted"></i>
-                                                                                                                                    <small class="text-muted">OS BD : ${item.sys_exp_bd}</small>
-                                                                                                                                </div>` : ''}
+                                                                                                                                            <div class="d-flex align-items-center mb-2">
+                                                                                                                                                <i class="bi bi-hdd me-2 text-muted"></i>
+                                                                                                                                                <small class="text-muted">OS BD : ${item.sys_exp_bd}</small>
+                                                                                                                                            </div>` : ''}
 
                             ${item.critical ? `
-                                                                                                                                <div class="mt-3">
-                                                                                                                                    <span class="badge bg-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i> Critique</span>
-                                                                                                                                </div>` : ''}
+                                                                                                                                            <div class="mt-3">
+                                                                                                                                                <span class="badge bg-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i> Critique</span>
+                                                                                                                                            </div>` : ''}
                         </div>
                     </div>
                 </div>
@@ -1028,28 +1028,34 @@
                             const sidebarNav = document.querySelector('.sidebar-nav');
                             if (sidebarNav) {
                                 // Supprimer anciennes recherches
-                                sidebarNav.querySelectorAll(
-                                        '.recent-searches-header, .recent-search-item, .clear-searches-btn')
+                                sidebarNav.querySelectorAll('.recent-searches-header, .recent-search-item')
                                     .forEach(el => el.remove());
 
-                                // Ajouter le bouton de suppression dans sidebar-cta
-                                const sidebarCta = document.querySelector('.sidebar-cta .sidebar-cta-content');
-                                if (sidebarCta) {
-                                    const clearBtnContainer = document.createElement('div');
-                                    clearBtnContainer.className = 'mt-2 text-center';
-                                    clearBtnContainer.innerHTML = `
-                            <button class="btn btn-sm btn-outline-danger clear-searches-btn" title="Effacer l'historique">
-                                <i class="bi bi-trash me-1"></i> Effacer l'historique
-                            </button>
-                        `;
-                                    sidebarCta.appendChild(clearBtnContainer);
+                                // Vérifier si le bouton existe déjà avant de le recréer
+                                let clearBtnContainer = document.querySelector('.clear-searches-container');
 
-                                    // Bouton de suppression
-                                    const clearBtn = clearBtnContainer.querySelector('.clear-searches-btn');
-                                    clearBtn.addEventListener('click', function(e) {
-                                        e.preventDefault();
-                                        clearAllRecentSearches();
-                                    });
+                                if (!clearBtnContainer) {
+                                    // Ajouter le bouton de suppression dans sidebar-cta
+                                    const sidebarCta = document.querySelector(
+                                        '.sidebar-cta .sidebar-cta-content');
+                                    if (sidebarCta) {
+                                        clearBtnContainer = document.createElement('div');
+                                        clearBtnContainer.className =
+                                            'clear-searches-container mt-2 text-center';
+                                        clearBtnContainer.innerHTML = `
+                                <button class="btn btn-sm btn-outline-danger clear-searches-btn" title="Effacer l'historique">
+                                    <i class="bi bi-trash me-1"></i> Effacer l'historique
+                                </button>
+                            `;
+                                        sidebarCta.appendChild(clearBtnContainer);
+
+                                        // Bouton de suppression
+                                        const clearBtn = clearBtnContainer.querySelector('.clear-searches-btn');
+                                        clearBtn.addEventListener('click', function(e) {
+                                            e.preventDefault();
+                                            clearAllRecentSearches();
+                                        });
+                                    }
                                 }
 
                                 // Point d'insertion pour les recherches
@@ -1086,6 +1092,7 @@
                     })
                     .catch(error => console.error('Erreur:', error));
             }
+
 
             // Fonction pour vider l'historique avec SweetAlert2
             function clearAllRecentSearches() {
