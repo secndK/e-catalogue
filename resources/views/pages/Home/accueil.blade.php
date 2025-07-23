@@ -4,6 +4,7 @@
 
 @section('content')
     <div class="px-4 container-fluid">
+
         <div class="row">
             <div class="col-12">
                 <!-- Barre de recherche -->
@@ -37,7 +38,7 @@
                             </div>
 
                             <div class="row g-4" id="cardsContainer">
-                                @foreach ($catalogue as $index => $app)
+                                @foreach ($catalogue as $app)
                                     <div class="col-xl-3 col-md-6">
                                         <div class="card shadow-sm h-100 border-0 overflow-hidden">
                                             <div class="card-body position-relative">
@@ -76,21 +77,77 @@
                                                     </ul>
                                                 </div>
 
+                                                <!-- Nom de l'application -->
                                                 <h5 class="card-title fw-bold text-dark mb-3">
                                                     <i class="bi bi-box-seam text-primary"></i> {{ $app->app_name }}
                                                 </h5>
 
-                                                @if (isset($app->adr_serv))
+                                                <!-- Adresse serveur -->
+                                                @if (!empty($app->adr_serv))
                                                     <div class="d-flex align-items-center mb-2">
                                                         <i class="bi bi-hdd-network me-2 text-muted"></i>
                                                         <small class="text-muted">{{ $app->adr_serv }}</small>
                                                     </div>
                                                 @endif
 
-                                                @if (isset($app->env_prod))
-                                                    <div class="d-flex align-items-center">
+                                                <!-- ENVIRONNEMENTS -->
+                                                @if (!empty($app->env_prod))
+                                                    <div class="d-flex align-items-center mb-1">
                                                         <span class="badge bg-success me-2">PROD</span>
-                                                        <small class="text-muted">{{ $app->env_prod }}</small>
+                                                        <small class="text-muted">{{ $app->adr_serv_prod }}</small>
+                                                    </div>
+                                                @endif
+
+                                                @if (!empty($app->env_test))
+                                                    <div class="d-flex align-items-center mb-1">
+                                                        <span class="badge bg-warning text-dark me-2">TEST</span>
+                                                        <small class="text-muted">{{ $app->adr_serv }}</small>
+                                                    </div>
+                                                @endif
+
+                                                @if (!empty($app->env_dev))
+                                                    <div class="d-flex align-items-center mb-1">
+                                                        <span class="badge bg-info text-dark me-2">DEV</span>
+                                                        <small class="text-muted">{{ $app->adr_serv_dev }}</small>
+                                                    </div>
+                                                @endif
+
+                                                <!-- Langage / OS / Criticité -->
+                                                @if (!empty($app->lang_dev))
+                                                    <div class="d-flex align-items-center mb-1">
+                                                        <i class="bi bi-code-slash me-2 text-muted"></i>
+                                                        <small class="text-muted">{{ $app->lang_dev }}</small>
+                                                    </div>
+                                                @endif
+
+                                                @if (!empty($app->sys_exp))
+                                                    <div class="d-flex align-items-center mb-1">
+                                                        <i class="bi bi-terminal-dash me-2 text-muted"></i>
+                                                        <small class="text-muted">{{ $app->sys_exp }}</small>
+                                                    </div>
+                                                @endif
+
+                                                <!-- Base de données -->
+                                                @if (!empty($app->adr_serv_bd))
+                                                    <div class="d-flex align-items-center mb-1">
+                                                        <i class="bi bi-database me-2 text-muted"></i>
+                                                        <small class="text-muted">{{ $app->adr_serv_bd }}</small>
+                                                    </div>
+                                                @endif
+
+                                                @if (!empty($app->sys_exp_bd))
+                                                    <div class="d-flex align-items-center mb-1">
+                                                        <i class="bi bi-cpu me-2 text-muted"></i>
+                                                        <small class="text-muted">{{ $app->sys_exp_bd }}</small>
+                                                    </div>
+                                                @endif
+
+                                                <!-- Criticité -->
+                                                @if (!empty($app->critical))
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="bi bi-exclamation-triangle-fill me-2 text-danger"></i>
+                                                        <small
+                                                            class="text-danger fw-bold">{{ strtoupper($app->critical) }}</small>
                                                     </div>
                                                 @endif
                                             </div>
@@ -110,12 +167,13 @@
                     @else
                         <div class="col-12 mt-0">
                             <div class="text-center py-5">
-
-                                <p class="text-muted">Utilisez la barre de recherche pour trouver des applications</p>
+                                <p class="text-muted">Utilisez la barre de recherche pour trouver les applications du
+                                    catalogue</p>
                             </div>
                         </div>
                     @endif
                 </div>
+
             </div>
         </div>
     </div>
@@ -140,104 +198,151 @@
     </div>
 
 
+
     <!-- Modal de création -->
-    <div class="modal fade" id="createAppModal" tabindex="-1" aria-labelledby="createAppModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal fade" id="createAppModal" tabindex="-1" aria-labelledby="createAppModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content border-0 shadow">
                 <div class="modal-header bg-light">
                     <h5 class="modal-title" id="createAppModalLabel">
                         <i class="bi bi-plus-circle-fill text-primary me-2"></i>
                         Nouvelle Application
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                 </div>
+
                 <form action="{{ route('catalogue.create') }}" method="POST">
                     @csrf
                     <div class="modal-body">
-                        <div id="createAppErrors" class="alert alert-danger d-none" role="alert"></div>
-                        <div class="row g-3">
-                            <!-- Ligne 1 -->
-                            <div class="col-md-6">
-                                <label for="app_name" class="form-label">
+                        <div id="createAppErrors" class="alert alert-danger d-none"></div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-12">
+                                <label for="app_name" class="form-label fw-bold">
                                     <i class="bi bi-box-seam me-1"></i> Nom de l'application*
                                 </label>
                                 <input type="text" class="form-control" id="app_name" name="app_name" required>
                             </div>
+                        </div>
 
-                            <div class="col-md-6">
-                                <label for="adr_serv" class="form-label">
-                                    <i class="bi bi-hdd-network me-1"></i> Adresse Serveur*
-                                </label>
-                                <input type="text" class="form-control" id="adr_serv" name="adr_serv" required>
+                        <div class="p-3 border rounded mb-3">
+                            <h6 class="text-primary fw-bold mb-3">
+                                <i class="bi bi-code-square me-1"></i> Environnement Développement
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="env_dev" class="form-label">Nom</label>
+                                    <input type="text" class="form-control" id="env_dev" name="env_dev">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="adr_serv_dev" class="form-label">Adresse Serveur</label>
+                                    <input type="text" class="form-control" id="adr_serv_dev" name="adr_serv_dev">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="sys_exp_dev" class="form-label">OS Serveur</label>
+                                    <input type="text" class="form-control" id="sys_exp_dev" name="sys_exp_dev">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="adr_serv_bd_dev" class="form-label">Adresse BD</label>
+                                    <input type="text" class="form-control" id="adr_serv_bd_dev"
+                                        name="adr_serv_bd_dev">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="sys_exp_bd_dev" class="form-label">OS BD</label>
+                                    <input type="text" class="form-control" id="sys_exp_bd_dev"
+                                        name="sys_exp_bd_dev">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="lang_deve_dev" class="form-label">Langage</label>
+                                    <input type="text" class="form-control" id="lang_deve_dev" name="lang_deve_dev">
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="critical_dev" class="form-label">Criticité</label>
+                                    <input type="text" class="form-control" id="critical_dev" name="critical_dev">
+                                </div>
                             </div>
+                        </div>
 
-                            <!-- Ligne 2 -->
-                            <div class="col-md-4">
-                                <label for="env_dev" class="form-label">
-                                    <i class="bi bi-code-square me-1"></i> Environnement DEV*
-                                </label>
-                                <input type="text" class="form-control" id="env_dev" name="env_dev" required>
+                        <div class="p-3 border rounded mb-3">
+                            <h6 class="text-warning fw-bold mb-3">
+                                <i class="bi bi-bug me-1"></i> Environnement Test
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="env_test" class="form-label">Nom</label>
+                                    <input type="text" class="form-control" id="env_test" name="env_test">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="adr_serv_test" class="form-label">Adresse Serveur</label>
+                                    <input type="text" class="form-control" id="adr_serv_test" name="adr_serv_test">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="sys_exp_test" class="form-label">OS Serveur</label>
+                                    <input type="text" class="form-control" id="sys_exp_test" name="sys_exp_test">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="adr_serv_bd_test" class="form-label">Adresse BD</label>
+                                    <input type="text" class="form-control" id="adr_serv_bd_test"
+                                        name="adr_serv_bd_test">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="sys_exp_bd_test" class="form-label">OS BD</label>
+                                    <input type="text" class="form-control" id="sys_exp_bd_test"
+                                        name="sys_exp_bd_test">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="lang_deve_test" class="form-label">Langage</label>
+                                    <input type="text" class="form-control" id="lang_deve_test"
+                                        name="lang_deve_test">
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="critical_test" class="form-label">Criticité</label>
+                                    <input type="text" class="form-control" id="critical_test" name="critical_test">
+                                </div>
                             </div>
+                        </div>
 
-                            <div class="col-md-4">
-                                <label for="env_test" class="form-label">
-                                    <i class="bi bi-bug me-1"></i> Environnement TEST*
-                                </label>
-                                <input type="text" class="form-control" id="env_test" name="env_test" required>
-                            </div>
-
-                            <div class="col-md-4">
-                                <label for="env_prod" class="form-label">
-                                    <i class="bi bi-check-circle me-1"></i> Environnement PROD*
-                                </label>
-                                <input type="text" class="form-control" id="env_prod" name="env_prod" required>
-                            </div>
-
-                            <!-- Ligne 3 -->
-                            <div class="col-md-6">
-                                <label for="sys_exp" class="form-label">
-                                    <i class="bi bi-pc me-1"></i> Système d'exploitation*
-                                </label>
-                                <input type="text" class="form-control" id="sys_exp" name="sys_exp" required>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="lang_dev" class="form-label">
-                                    <i class="bi bi-file-code me-1"></i> Langage de développement*
-                                </label>
-                                <input type="text" class="form-control" id="lang_dev" name="lang_dev" required>
-                            </div>
-
-                            <!-- Ligne 4 -->
-                            <div class="col-md-6">
-                                <label for="adr_serv_bd" class="form-label">
-                                    <i class="bi bi-database me-1"></i> Adresse Base de Données*
-                                </label>
-                                <input type="text" class="form-control" id="adr_serv_bd" name="adr_serv_bd" required>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="sys_exp_bd" class="form-label">
-                                    <i class="bi bi-server me-1"></i> Système Base de Données*
-                                </label>
-                                <input type="text" class="form-control" id="sys_exp_bd" name="sys_exp_bd" required>
-                            </div>
-
-                            <!-- Ligne 5 -->
-                            <div class="col-12">
-                                <label for="critical" class="form-label">
-                                    <i class="bi bi-exclamation-triangle me-1"></i> Criticité
-                                </label>
-                                <select class="form-select" id="critical" name="critical">
-                                    <option value="">Non définie</option>
-                                    <option value="Critique">Critique</option>
-                                    <option value="Haute">Haute</option>
-                                    <option value="Moyenne">Moyenne</option>
-                                    <option value="Faible">Faible</option>
-                                </select>
+                        <div class="p-3 border rounded mb-3">
+                            <h6 class="text-success fw-bold mb-3">
+                                <i class="bi bi-check-circle me-1"></i> Environnement Production
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="env_prod" class="form-label">Nom</label>
+                                    <input type="text" class="form-control" id="env_prod" name="env_prod">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="adr_serv_prod" class="form-label">Adresse Serveur</label>
+                                    <input type="text" class="form-control" id="adr_serv_prod" name="adr_serv_prod">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="sys_exp_prod" class="form-label">OS Serveur</label>
+                                    <input type="text" class="form-control" id="sys_exp_prod" name="sys_exp_prod">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="adr_serv_bd_prod" class="form-label">Adresse BD</label>
+                                    <input type="text" class="form-control" id="adr_serv_bd_prod"
+                                        name="adr_serv_bd_prod">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="sys_exp_bd_prod" class="form-label">OS BD</label>
+                                    <input type="text" class="form-control" id="sys_exp_bd_prod"
+                                        name="sys_exp_bd_prod">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="lang_deve_prod" class="form-label">Langage</label>
+                                    <input type="text" class="form-control" id="lang_deve_prod"
+                                        name="lang_deve_prod">
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="critical_prod" class="form-label">Criticité</label>
+                                    <input type="text" class="form-control" id="critical_prod" name="critical_prod">
+                                </div>
                             </div>
                         </div>
                     </div>
+
                     <div class="modal-footer bg-light">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             <i class="bi bi-x-lg me-1"></i> Annuler
@@ -251,121 +356,167 @@
         </div>
     </div>
 
+
+    <!-- Modal de modification -->
     <!-- Modal de modification -->
     <div class="modal fade" id="editAppModal" tabindex="-1" aria-labelledby="editAppModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content border-0 shadow">
                 <div class="modal-header bg-light">
                     <h5 class="modal-title" id="editAppModalLabel">
                         <i class="bi bi-pencil-square text-primary me-2"></i>
                         Modifier l'application
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                 </div>
                 <form id="editAppForm" method="POST">
                     @csrf
                     <input type="hidden" id="edit_app_id" name="id">
+
                     <div class="modal-body">
-                        <div id="editAppErrors" class="alert alert-danger d-none" role="alert"></div>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label for="edit_app_name" class="form-label">
-                                    <i class="bi bi-box-seam me-1"></i> Nom de l'application<span
-                                        class="text-danger">*</span>
+                        <div id="editAppErrors" class="alert alert-danger d-none"></div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-12">
+                                <label for="edit_app_name" class="form-label fw-bold">
+                                    <i class="bi bi-box-seam me-1"></i> Nom de l'application*
                                 </label>
                                 <input type="text" class="form-control" id="edit_app_name" name="app_name" required>
                             </div>
+                        </div>
 
-                            <div class="col-md-6">
-                                <label for="edit_adr_serv" class="form-label">
-                                    <i class="bi bi-hdd-network me-1"></i> Adresse Serveur<span
-                                        class="text-danger">*</span>
-                                </label>
-                                <input type="text" class="form-control" id="edit_adr_serv" name="adr_serv" required>
+                        <!-- Environnement DEV -->
+                        <div class="p-3 border rounded mb-3">
+                            <h6 class="text-primary fw-bold mb-3">
+                                <i class="bi bi-code-square me-1"></i> Environnement Développement
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-4"><label for="edit_env_dev" class="form-label">Nom</label>
+                                    <input type="text" class="form-control" id="edit_env_dev" name="env_dev">
+                                </div>
+                                <div class="col-md-4"><label for="edit_adr_serv_dev" class="form-label">Adresse
+                                        Serveur</label>
+                                    <input type="text" class="form-control" id="edit_adr_serv_dev"
+                                        name="adr_serv_dev">
+                                </div>
+                                <div class="col-md-4"><label for="edit_sys_exp_dev" class="form-label">OS Serveur</label>
+                                    <input type="text" class="form-control" id="edit_sys_exp_dev" name="sys_exp_dev">
+                                </div>
+                                <div class="col-md-4"><label for="edit_adr_serv_bd_dev" class="form-label">Adresse
+                                        BD</label>
+                                    <input type="text" class="form-control" id="edit_adr_serv_bd_dev"
+                                        name="adr_serv_bd_dev">
+                                </div>
+                                <div class="col-md-4"><label for="edit_sys_exp_bd_dev" class="form-label">OS BD</label>
+                                    <input type="text" class="form-control" id="edit_sys_exp_bd_dev"
+                                        name="sys_exp_bd_dev">
+                                </div>
+                                <div class="col-md-4"><label for="edit_lang_deve_dev" class="form-label">Langage</label>
+                                    <input type="text" class="form-control" id="edit_lang_deve_dev"
+                                        name="lang_deve_dev">
+                                </div>
+                                <div class="col-md-12"><label for="edit_critical_dev"
+                                        class="form-label">Criticité</label>
+                                    <input type="text" class="form-control" id="edit_critical_dev"
+                                        name="critical_dev">
+                                </div>
                             </div>
+                        </div>
 
-                            <div class="col-md-4">
-                                <label for="edit_env_dev" class="form-label">
-                                    <i class="bi bi-code-square me-1"></i> Environnement DEV<span
-                                        class="text-danger">*</span>
-                                </label>
-                                <input type="text" class="form-control" id="edit_env_dev" name="env_dev" required>
+                        <!-- Environnement TEST -->
+                        <div class="p-3 border rounded mb-3">
+                            <h6 class="text-warning fw-bold mb-3">
+                                <i class="bi bi-bug me-1"></i> Environnement Test
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-4"><label for="edit_env_test" class="form-label">Nom</label>
+                                    <input type="text" class="form-control" id="edit_env_test" name="env_test">
+                                </div>
+                                <div class="col-md-4"><label for="edit_adr_serv_test" class="form-label">Adresse
+                                        Serveur</label>
+                                    <input type="text" class="form-control" id="edit_adr_serv_test"
+                                        name="adr_serv_test">
+                                </div>
+                                <div class="col-md-4"><label for="edit_sys_exp_test" class="form-label">OS
+                                        Serveur</label>
+                                    <input type="text" class="form-control" id="edit_sys_exp_test"
+                                        name="sys_exp_test">
+                                </div>
+                                <div class="col-md-4"><label for="edit_adr_serv_bd_test" class="form-label">Adresse
+                                        BD</label>
+                                    <input type="text" class="form-control" id="edit_adr_serv_bd_test"
+                                        name="adr_serv_bd_test">
+                                </div>
+                                <div class="col-md-4"><label for="edit_sys_exp_bd_test" class="form-label">OS BD</label>
+                                    <input type="text" class="form-control" id="edit_sys_exp_bd_test"
+                                        name="sys_exp_bd_test">
+                                </div>
+                                <div class="col-md-4"><label for="edit_lang_deve_test" class="form-label">Langage</label>
+                                    <input type="text" class="form-control" id="edit_lang_deve_test"
+                                        name="lang_deve_test">
+                                </div>
+                                <div class="col-md-12"><label for="edit_critical_test"
+                                        class="form-label">Criticité</label>
+                                    <input type="text" class="form-control" id="edit_critical_test"
+                                        name="critical_test">
+                                </div>
                             </div>
+                        </div>
 
-                            <div class="col-md-4">
-                                <label for="edit_env_test" class="form-label">
-                                    <i class="bi bi-bug me-1"></i> Environnement TEST<span class="text-danger">*</span>
-                                </label>
-                                <input type="text" class="form-control" id="edit_env_test" name="env_test" required>
-                            </div>
-
-                            <div class="col-md-4">
-                                <label for="edit_env_prod" class="form-label">
-                                    <i class="bi bi-check-circle me-1"></i> Environnement PROD<span
-                                        class="text-danger">*</span>
-                                </label>
-                                <input type="text" class="form-control" id="edit_env_prod" name="env_prod" required>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="edit_sys_exp" class="form-label">
-                                    <i class="bi bi-pc me-1"></i> Système d'exploitation<span class="text-danger">*</span>
-                                </label>
-                                <input type="text" class="form-control" id="edit_sys_exp" name="sys_exp" required>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="edit_lang_dev" class="form-label">
-                                    <i class="bi bi-file-code me-1"></i> Langage de développement<span
-                                        class="text-danger">*</span>
-                                </label>
-                                <input type="text" class="form-control" id="edit_lang_dev" name="lang_dev" required>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="edit_adr_serv_bd" class="form-label">
-                                    <i class="bi bi-database me-1"></i> Adresse Base de Données<span
-                                        class="text-danger">*</span>
-                                </label>
-                                <input type="text" class="form-control" id="edit_adr_serv_bd" name="adr_serv_bd"
-                                    required>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="edit_sys_exp_bd" class="form-label">
-                                    <i class="bi bi-server me-1"></i> Système Base de Données<span
-                                        class="text-danger">*</span>
-                                </label>
-                                <input type="text" class="form-control" id="edit_sys_exp_bd" name="sys_exp_bd"
-                                    required>
-                            </div>
-
-                            <div class="col-12">
-                                <label for="edit_critical" class="form-label">
-                                    <i class="bi bi-exclamation-triangle me-1"></i> Criticité
-                                </label>
-                                <select class="form-select" id="edit_critical" name="critical">
-                                    <option value="">Non définie</option>
-                                    <option value="Critique">Critique</option>
-                                    <option value="Haute">Haute</option>
-                                    <option value="Moyenne">Moyenne</option>
-                                    <option value="Faible">Faible</option>
-                                </select>
+                        <!-- Environnement PROD -->
+                        <div class="p-3 border rounded mb-3">
+                            <h6 class="text-success fw-bold mb-3">
+                                <i class="bi bi-check-circle me-1"></i> Environnement Production
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-4"><label for="edit_env_prod" class="form-label">Nom</label>
+                                    <input type="text" class="form-control" id="edit_env_prod" name="env_prod">
+                                </div>
+                                <div class="col-md-4"><label for="edit_adr_serv_prod" class="form-label">Adresse
+                                        Serveur</label>
+                                    <input type="text" class="form-control" id="edit_adr_serv_prod"
+                                        name="adr_serv_prod">
+                                </div>
+                                <div class="col-md-4"><label for="edit_sys_exp_prod" class="form-label">OS
+                                        Serveur</label>
+                                    <input type="text" class="form-control" id="edit_sys_exp_prod"
+                                        name="sys_exp_prod">
+                                </div>
+                                <div class="col-md-4"><label for="edit_adr_serv_bd_prod" class="form-label">Adresse
+                                        BD</label>
+                                    <input type="text" class="form-control" id="edit_adr_serv_bd_prod"
+                                        name="adr_serv_bd_prod">
+                                </div>
+                                <div class="col-md-4"><label for="edit_sys_exp_bd_prod" class="form-label">OS BD</label>
+                                    <input type="text" class="form-control" id="edit_sys_exp_bd_prod"
+                                        name="sys_exp_bd_prod">
+                                </div>
+                                <div class="col-md-4"><label for="edit_lang_deve_prod" class="form-label">Langage</label>
+                                    <input type="text" class="form-control" id="edit_lang_deve_prod"
+                                        name="lang_deve_prod">
+                                </div>
+                                <div class="col-md-12"><label for="edit_critical_prod"
+                                        class="form-label">Criticité</label>
+                                    <input type="text" class="form-control" id="edit_critical_prod"
+                                        name="critical_prod">
+                                </div>
                             </div>
                         </div>
                     </div>
+
                     <div class="modal-footer bg-light">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            <i class="bi bi-x-lg me-1"></i> Annuler
+                            <i class="bi bi-x-circle me-1"></i> Annuler
                         </button>
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-check-lg me-1"></i> Enregistrer
+                            <i class="bi bi-save2 me-1"></i> Enregistrer
                         </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
 
 
 @endsection
@@ -467,7 +618,7 @@
                 if (query.length > 2) {
                     searchTimeout = setTimeout(() => {
                         performAjaxSearch(query);
-                    }, 1500);
+                    }, 900);
                 } else if (query.length === 0) {
                     updateResults([], '');
                     refreshRecentSearches();
@@ -501,81 +652,123 @@
 
                 if (query && query.length > 0 && results.length > 0) {
                     html += `<div class="result-count mb-3">
-                        <span class="text-primary fw-bold">
-                            <i class="bi bi-check-circle-fill"></i> Résultats pour "${query}"
-                        </span>
-                    </div>
-                    <div class="row g-4" id="cardsContainer">`;
+            <span class="text-primary fw-bold">
+                <i class="bi bi-check-circle-fill"></i> Résultats pour "${query}"
+            </span>
+        </div>
+        <div class="row g-4" id="cardsContainer">`;
 
                     results.forEach((item, index) => {
                         html += `
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card shadow-sm h-100 border-0 overflow-hidden">
-                                    <div class="card-body position-relative">
-                                        <!-- Menu d'actions -->
-                                        <div class="dropdown position-absolute top-0 end-0 mt-2 me-2">
-                                            <button class="btn btn-sm btn-outline-secondary rounded-circle"
-                                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="bi bi-three-dots-vertical"></i>
-                                            </button>
-                                            <ul class="dropdown-menu dropdown-menu-end">
-                                                <li>
-                                                    <button class="dropdown-item view-app"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#appDetailsModal"
-                                                            data-app='${JSON.stringify(item)}'>
-                                                        <i class="bi bi-eye-fill me-2"></i>Voir
-                                                    </button>
-                                                </li>
-                                                <li>
-                                                    <button class="dropdown-item edit-app" data-app-id="${item.id}">
-                                                        <i class="bi bi-pencil-fill me-2"></i>Modifier
-                                                    </button>
-                                                </li>
-                                                <li><hr class="dropdown-divider"></li>
-                                                <li>
-                                                    <button class="dropdown-item text-danger delete-app" data-app-id="${item.id}">
-                                                        <i class="bi bi-trash-fill me-2"></i>Supprimer
-                                                    </button>
-                                                </li>
-                                            </ul>
-                                        </div>
-
-                                        <h5 class="card-title fw-bold text-dark mb-3">
-                                            <i class="bi bi-box-seam text-primary"></i> ${item.app_name}
-                                        </h5>
-
-                                        ${item.adr_serv ? `
-                                                                                                <div class="d-flex align-items-center mb-2">
-                                                                                                    <i class="bi bi-hdd-network me-2 text-muted"></i>
-                                                                                                    <small class="text-muted">${item.adr_serv}</small>
-                                                                                                </div>` : ''}
-
-                                        ${item.env_prod ? `
-                                                                                                <div class="d-flex align-items-center">
-                                                                                                    <span class="badge bg-success me-2">PROD</span>
-                                                                                                    <small class="text-muted">${item.env_prod}</small>
-                                                                                                </div>` : ''}
-                                    </div>
-                                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card shadow-sm h-100 border-0 overflow-hidden">
+                        <div class="card-body position-relative">
+                            <!-- Menu d'actions -->
+                            <div class="dropdown position-absolute top-0 end-0 mt-2 me-2">
+                                <button class="btn btn-sm btn-outline-secondary rounded-circle"
+                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <button class="dropdown-item view-app"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#appDetailsModal"
+                                                data-app='${JSON.stringify(item)}'>
+                                            <i class="bi bi-eye-fill me-2"></i>Voir
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item edit-app" data-app-id="${item.id}">
+                                            <i class="bi bi-pencil-fill me-2"></i>Modifier
+                                        </button>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <button class="dropdown-item text-danger delete-app" data-app-id="${item.id}" data-app-name="${item.app_name}">
+                                            <i class="bi bi-trash-fill me-2"></i>Supprimer
+                                        </button>
+                                    </li>
+                                </ul>
                             </div>
-                        `;
+
+                            <h5 class="card-title fw-bold text-dark mb-3">
+                                <i class="bi bi-box-seam text-primary"></i> ${item.app_name}
+                            </h5>
+
+                            ${item.adr_serv ? `
+                                                                                                                                <div class="d-flex align-items-center mb-2">
+                                                                                                                                    <i class="bi bi-hdd-network me-2 text-muted"></i>
+                                                                                                                                    <small class="text-muted">${item.adr_serv}</small>
+                                                                                                                                </div>` : ''}
+
+                            ${item.env_dev ? `
+                                                                                                                                <div class="d-flex align-items-center mb-2">
+                                                                                                                                    <span class="badge bg-warning text-dark me-2">DEV</span>
+                                                                                                                                    <small class="text-muted">${item.adr_serv_dev}</small>
+                                                                                                                                </div>` : ''}
+
+                            ${item.env_test ? `
+                                                                                                                                <div class="d-flex align-items-center mb-2">
+                                                                                                                                    <span class="badge bg-info text-dark me-2">TEST</span>
+                                                                                                                                    <small class="text-muted">${item.adr_serv_test}</small>
+                                                                                                                                </div>` : ''}
+
+                            ${item.env_prod ? `
+                                                                                                                                <div class="d-flex align-items-center mb-2">
+                                                                                                                                    <span class="badge bg-success me-2">PROD</span>
+                                                                                                                                    <small class="text-muted">${item.adr_serv_prod}</small>
+                                                                                                                                </div>` : ''}
+
+                            ${item.sys_exp ? `
+                                                                                                                                <div class="d-flex align-items-center mb-2">
+                                                                                                                                    <i class="bi bi-cpu me-2 text-muted"></i>
+                                                                                                                                    <small class="text-muted">OS : ${item.sys_exp}</small>
+                                                                                                                                </div>` : ''}
+
+                            ${item.lang_dev ? `
+                                                                                                                                <div class="d-flex align-items-center mb-2">
+                                                                                                                                    <i class="bi bi-code-slash me-2 text-muted"></i>
+                                                                                                                                    <small class="text-muted">Langage : ${item.lang_dev}</small>
+                                                                                                                                </div>` : ''}
+
+                            ${item.adr_serv_bd ? `
+                                                                                                                                <div class="d-flex align-items-center mb-2">
+                                                                                                                                    <i class="bi bi-server me-2 text-muted"></i>
+                                                                                                                                    <small class="text-muted">BD : ${item.adr_serv_bd}</small>
+                                                                                                                                </div>` : ''}
+
+                            ${item.sys_exp_bd ? `
+                                                                                                                                <div class="d-flex align-items-center mb-2">
+                                                                                                                                    <i class="bi bi-hdd me-2 text-muted"></i>
+                                                                                                                                    <small class="text-muted">OS BD : ${item.sys_exp_bd}</small>
+                                                                                                                                </div>` : ''}
+
+                            ${item.critical ? `
+                                                                                                                                <div class="mt-3">
+                                                                                                                                    <span class="badge bg-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i> Critique</span>
+                                                                                                                                </div>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
                     });
 
                     html += '</div>';
                 } else {
                     html = `
-                        <div class="col-12">
-                            <div class="text-center py-5">
-                                <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
-                                <h4 class="text-muted">${query ? 'Aucun résultat trouvé' : 'Recherchez une application'}</h4>
-                                <p class="text-muted">${query ? 'Essayez avec d\'autres mots-clés' : 'Utilisez la barre de recherche pour trouver des applications'}</p>
-                            </div>
-                        </div>`;
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
+                    <h4 class="text-muted">${query ? 'Aucun résultat trouvé' : 'Recherchez une application'}</h4>
+                    <p class="text-muted">${query ? 'Essayez avec d\'autres mots-clés' : 'Utilisez la barre de recherche pour trouver des applications'}</p>
+                </div>
+            </div>`;
                 }
 
                 document.getElementById('searchResults').innerHTML = html;
             }
+
 
 
             // Gestion du bouton "Afficher toutes les applications"
@@ -696,8 +889,7 @@
                                 `,
                                     icon: 'success',
                                     showConfirmButton: true,
-                                    confirmButtonText: 'Voir le résultat',
-                                    confirmButtonColor: '#28a745',
+
                                     background: '#fff',
                                     customClass: {
                                         popup: 'animated fadeInUp faster'
@@ -775,19 +967,50 @@
                     const button = event.relatedTarget;
                     const app = JSON.parse(button.getAttribute('data-app'));
 
+                    const section = (title) => `
+            <tr class="table-light">
+                <th colspan="2" class="text-primary text-uppercase fw-bold">${title}</th>
+            </tr>
+        `;
+
+                    const row = (label, value) => `
+            <tr>
+                <th class="w-50">${label}</th>
+                <td>${value || '<span class="text-muted">-</span>'}</td>
+            </tr>
+        `;
+
                     const detailsBody = document.getElementById('appDetailsContent');
                     detailsBody.innerHTML = `
-                        <tr><th>Nom de l'application</th><td>${app.app_name || '-'}</td></tr>
-                        <tr><th>Adresse Serveur</th><td>${app.adr_serv || '-'}</td></tr>
-                        <tr><th>Système d'exploitation</th><td>${app.sys_exp || '-'}</td></tr>
-                        <tr><th>Adresse BD</th><td>${app.adr_serv_bd || '-'}</td></tr>
-                        <tr><th>Système BD</th><td>${app.sys_exp_bd || '-'}</td></tr>
-                        <tr><th>Langage de Développement</th><td>${app.lang_dev || '-'}</td></tr>
-                        <tr><th>Environnement DEV</th><td>${app.env_dev || '-'}</td></tr>
-                        <tr><th>Environnement TEST</th><td>${app.env_test || '-'}</td></tr>
-                        <tr><th>Environnement PROD</th><td>${app.env_prod || '-'}</td></tr>
-                        <tr><th>Criticité</th><td>${app.critical || '-'}</td></tr>
-                    `;
+            ${row("Nom de l'application", app.app_name)}
+
+            ${section("Environnement Développement")}
+            ${row(" Nom environnement", app.env_dev)}
+            ${row("Adresse Serveur", app.adr_serv_dev)}
+            ${row("OS Serveur", app.sys_exp_dev)}
+            ${row("Adresse Serveur BD", app.adr_serv_bd_dev)}
+            ${row("OS BD", app.sys_exp_bd_dev)}
+            ${row("Langage", app.lang_deve_dev)}
+            ${row("Criticité", app.critical_dev)}
+
+            ${section("Environnement Test")}
+            ${row("Nom environnement", app.env_test)}
+            ${row("Adresse Serveur", app.adr_serv_test)}
+            ${row("OS Serveur", app.sys_exp_test)}
+            ${row("Adresse Serveur BD", app.adr_serv_bd_test)}
+            ${row("OS BD", app.sys_exp_bd_test)}
+            ${row("Langage", app.lang_deve_test)}
+            ${row("Criticité", app.critical_test)}
+
+            ${section("Environnement Production")}
+            ${row("Nom environnement", app.env_prod)}
+            ${row("Adresse Serveur", app.adr_serv_prod)}
+            ${row("OS Serveur", app.sys_exp_prod)}
+            ${row("Adresse Serveur BD", app.adr_serv_bd_prod)}
+            ${row("OS BD", app.sys_exp_bd_prod)}
+            ${row("Langage", app.lang_deve_prod)}
+            ${row("Criticité", app.critical_prod)}
+        `;
                 }
             });
 
@@ -805,32 +1028,54 @@
                             const sidebarNav = document.querySelector('.sidebar-nav');
                             if (sidebarNav) {
                                 // Supprimer anciennes recherches
-                                sidebarNav.querySelectorAll('.recent-searches-header, .recent-search-item')
+                                sidebarNav.querySelectorAll(
+                                        '.recent-searches-header, .recent-search-item, .clear-searches-btn')
                                     .forEach(el => el.remove());
 
-                                // Point d’insertion
+                                // Ajouter le bouton de suppression dans sidebar-cta
+                                const sidebarCta = document.querySelector('.sidebar-cta .sidebar-cta-content');
+                                if (sidebarCta) {
+                                    const clearBtnContainer = document.createElement('div');
+                                    clearBtnContainer.className = 'mt-2 text-center';
+                                    clearBtnContainer.innerHTML = `
+                            <button class="btn btn-sm btn-outline-danger clear-searches-btn" title="Effacer l'historique">
+                                <i class="bi bi-trash me-1"></i> Effacer l'historique
+                            </button>
+                        `;
+                                    sidebarCta.appendChild(clearBtnContainer);
+
+                                    // Bouton de suppression
+                                    const clearBtn = clearBtnContainer.querySelector('.clear-searches-btn');
+                                    clearBtn.addEventListener('click', function(e) {
+                                        e.preventDefault();
+                                        clearAllRecentSearches();
+                                    });
+                                }
+
+                                // Point d'insertion pour les recherches
                                 const menuItem = sidebarNav.querySelector('.sidebar-item');
 
                                 if (menuItem && data.recent_searches.length > 0) {
-                                    // Titre
+                                    // Titre des recherches
                                     const recentHeader = document.createElement('li');
                                     recentHeader.className = 'sidebar-header recent-searches-header';
                                     recentHeader.innerHTML = `
-                                    Recherches Récentes
-                                    <i class="bi bi-clock-history float-end"></i>
-                                `;
+                            <i class="bi bi-clock-history me-2"></i>
+                            Recherches Récentes
+                        `;
                                     sidebarNav.insertBefore(recentHeader, menuItem.nextSibling);
 
-                                    // Résultats
+                                    // Liste des recherches
                                     data.recent_searches.forEach(search => {
                                         const recentItem = document.createElement('li');
                                         recentItem.className = 'sidebar-item recent-search-item';
                                         recentItem.innerHTML = `
-                                        <a class="sidebar-link recent-search-link" href="#" data-search="${search.search_term}">
-                                            <i class="bi bi-search"></i>
-                                            <span class="align-middle">${search.search_term}</span>
-                                            <span class="badge bg-primary rounded-pill float-end">${search.results_count}</span>
-                                        </a>`;
+                                <a class="sidebar-link recent-search-link" href="#" data-search="${search.search_term}">
+                                    <i class="bi bi-search me-2"></i>
+                                    <span>${search.search_term}</span>
+                                    <small class="text-muted ms-2">(${search.results_count} résultats)</small>
+                                </a>
+                            `;
                                         sidebarNav.insertBefore(recentItem, recentHeader.nextSibling);
                                     });
                                 }
@@ -840,6 +1085,52 @@
                         }
                     })
                     .catch(error => console.error('Erreur:', error));
+            }
+
+            // Fonction pour vider l'historique avec SweetAlert2
+            function clearAllRecentSearches() {
+                Swal.fire({
+                    title: 'Confirmer la suppression',
+                    text: "Voulez-vous vraiment supprimer toutes vos recherches récentes ?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Oui, supprimer',
+                    cancelButtonText: 'Annuler'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch('{{ route('clear.search.history') }}', {
+                                method: 'POST',
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                    'Accept': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    refreshRecentSearches();
+                                    Swal.fire({
+                                        title: 'Succès !',
+                                        text: data.message,
+                                        icon: 'success',
+                                        timer: 1500,
+                                        showConfirmButton: false
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Erreur:', error);
+                                Swal.fire({
+                                    title: 'Erreur',
+                                    text: 'Une erreur est survenue lors de la suppression',
+                                    icon: 'error'
+                                });
+                            });
+                    }
+                });
             }
 
             // ===== ÉDITION D'APPLICATION =====
@@ -856,17 +1147,16 @@
 
                     // Spinner de chargement
                     modalBody.innerHTML = `
-                        <div class="text-center py-4">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Chargement...</span>
-                            </div>
-                            <p class="mt-2">Chargement des données...</p>
-                        </div>
-                    `;
+            <div class="text-center py-4">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Chargement...</span>
+                </div>
+                <p class="mt-2">Chargement des données...</p>
+            </div>
+        `;
 
                     editModal.show();
 
-                    // Charger les données
                     fetch(`/catalogue/${appId}/edit`, {
                             method: 'GET',
                             headers: {
@@ -893,11 +1183,17 @@
                             // Restaurer le contenu du modal
                             modalBody.innerHTML = originalContent;
 
-                            // Remplir le formulaire
                             const appData = data.data;
+
                             const fields = [
-                                'app_name', 'adr_serv', 'env_dev', 'env_test', 'env_prod',
-                                'sys_exp', 'lang_dev', 'adr_serv_bd', 'sys_exp_bd', 'critical'
+                                'app_name',
+                                'adr_serv_dev', 'env_dev', 'sys_exp_dev', 'adr_serv_bd_dev',
+                                'sys_exp_bd_dev', 'lang_deve_dev', 'critical_dev',
+                                'adr_serv_prod', 'env_prod', 'sys_exp_prod', 'adr_serv_bd_prod',
+                                'sys_exp_bd_prod', 'lang_deve_prod', 'critical_prod',
+                                'adr_serv_test', 'env_test', 'sys_exp_test', 'adr_serv_bd_test',
+                                'sys_exp_bd_test', 'lang_deve_test', 'critical_test',
+                                'commentaires', 'adr_serv'
                             ];
 
                             fields.forEach(field => {
@@ -907,12 +1203,10 @@
                                 }
                             });
 
-                            // Configurer le formulaire
                             document.getElementById('edit_app_id').value = appData.id;
                             const form = document.getElementById('editAppForm');
                             form.action = `/catalogue/${appData.id}`;
 
-                            // S'assurer que la méthode est correcte
                             const methodField = form.querySelector('input[name="_method"]');
                             if (methodField) {
                                 methodField.value = 'PUT';
@@ -945,14 +1239,12 @@
                 console.log('📝 Soumission formulaire vers:', form.action);
                 console.log('📝 Données:', Object.fromEntries(formData));
 
-                // Désactiver le bouton
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = `
-                    <span class="spinner-border spinner-border-sm me-1"></span>
-                    Enregistrement...
-                `;
+        <span class="spinner-border spinner-border-sm me-1"></span>
+        Enregistrement...
+    `;
 
-                // Indicateur de chargement
                 Swal.fire({
                     title: 'Mise à jour en cours',
                     text: 'Veuillez patienter...',
@@ -960,7 +1252,6 @@
                     didOpen: () => Swal.showLoading()
                 });
 
-                // IMPORTANT: Utiliser POST avec _method=PUT pour Laravel
                 fetch(form.action, {
                         method: 'POST',
                         body: formData,
@@ -998,7 +1289,6 @@
                             throw new Error(data.message || 'Échec de la mise à jour');
                         }
 
-                        // Succès
                         Swal.fire({
                             title: 'Succès !',
                             text: data.message || 'Application mise à jour avec succès',
@@ -1024,11 +1314,11 @@
                         });
                     })
                     .finally(() => {
-                        // Restaurer le bouton
                         submitBtn.disabled = false;
                         submitBtn.innerHTML = originalBtnText;
                     });
             });
+
 
             // Gestion de la suppression d'application
             document.addEventListener('click', function(e) {

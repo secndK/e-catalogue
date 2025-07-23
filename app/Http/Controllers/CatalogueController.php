@@ -16,7 +16,7 @@ class CatalogueController extends Controller
      */
     public function getCatalogue()
     {
-        $array_catalogue = DB::connection('mysql')->select('SELECT * FROM catalogues LIMIT 12');
+        $array_catalogue = DB::connection('mysql')->select('SELECT * FROM catalogues LIMIT 15 ');
         $recentSearches = $this->getRecentSearchesData();
 
         return view('pages.Home.accueil', [
@@ -61,7 +61,7 @@ class CatalogueController extends Controller
             $results = DB::connection('mysql')->select(
                 'SELECT * FROM catalogues
                 WHERE LOWER(app_name) LIKE ?
-                OR env_dev = ? OR env_prod = ? OR env_test = ? OR adr_serv LIKE ?',
+                OR env_dev = ? OR env_prod = ? OR env_test = ? OR adr_serv_prod LIKE ?',
                 ['%' . strtolower($searchQuery) . '%', $searchQuery, $searchQuery, $searchQuery, '%' . $searchQuery . '%']
             );
 
@@ -106,35 +106,70 @@ class CatalogueController extends Controller
     public function createCatalogue(Request $request)
     {
         $request->validate([
-            'env_dev' => 'required|string',
-            'env_prod' => 'required|string',
-            'env_test' => 'required|string',
-            'adr_serv' => 'required|string',
-            'sys_exp' => 'required|string',
-            'adr_serv_bd' => 'required|string',
-            'sys_exp_bd' => 'required|string',
-            'lang_dev' => 'required|string',
-            'critical' => 'nullable|string',
-            'app_name' => 'required|string'
+            'app_name' => 'required|string',
+
+            // DEV
+            'env_dev' => 'nullable|string',
+            'adr_serv_dev' => 'nullable|string',
+            'sys_exp_dev' => 'nullable|string',
+            'adr_serv_bd_dev' => 'nullable|string',
+            'sys_exp_bd_dev' => 'nullable|string',
+            'lang_deve_dev' => 'nullable|string',
+            'critical_dev' => 'nullable|string',
+
+            // PROD
+            'env_prod' => 'nullable|string',
+            'adr_serv_prod' => 'nullable|string',
+            'sys_exp_prod' => 'nullable|string',
+            'adr_serv_bd_prod' => 'nullable|string',
+            'sys_exp_bd_prod' => 'nullable|string',
+            'lang_deve_prod' => 'nullable|string',
+            'critical_prod' => 'nullable|string',
+
+            // TEST
+            'env_test' => 'nullable|string',
+            'adr_serv_test' => 'nullable|string',
+            'sys_exp_test' => 'nullable|string',
+            'adr_serv_bd_test' => 'nullable|string',
+            'sys_exp_bd_test' => 'nullable|string',
+            'lang_deve_test' => 'nullable|string',
+            'critical_test' => 'nullable|string',
         ]);
 
         $data = [
+            'app_name' => $request->app_name,
+
+            // DEV
             'env_dev' => $request->env_dev,
+            'adr_serv_dev' => $request->adr_serv_dev,
+            'sys_exp_dev' => $request->sys_exp_dev,
+            'adr_serv_bd_dev' => $request->adr_serv_bd_dev,
+            'sys_exp_bd_dev' => $request->sys_exp_bd_dev,
+            'lang_deve_dev' => $request->lang_deve_dev,
+            'critical_dev' => $request->critical_dev,
+
+            // PROD
             'env_prod' => $request->env_prod,
+            'adr_serv_prod' => $request->adr_serv_prod,
+            'sys_exp_prod' => $request->sys_exp_prod,
+            'adr_serv_bd_prod' => $request->adr_serv_bd_prod,
+            'sys_exp_bd_prod' => $request->sys_exp_bd_prod,
+            'lang_deve_prod' => $request->lang_deve_prod,
+            'critical_prod' => $request->critical_prod,
+
+            // TEST
             'env_test' => $request->env_test,
-            'adr_serv' => $request->adr_serv,
-            'sys_exp' => $request->sys_exp,
-            'adr_serv_bd' => $request->adr_serv_bd,
-            'sys_exp_bd' => $request->sys_exp_bd,
-            'lang_dev' => $request->lang_dev,
-            'critical' => $request->critical,
-            'app_name' => $request->app_name
+            'adr_serv_test' => $request->adr_serv_test,
+            'sys_exp_test' => $request->sys_exp_test,
+            'adr_serv_bd_test' => $request->adr_serv_bd_test,
+            'sys_exp_bd_test' => $request->sys_exp_bd_test,
+            'lang_deve_test' => $request->lang_deve_test,
+            'critical_test' => $request->critical_test,
         ];
 
         try {
-            DB::connection('mysql')->table('catalogues')->insert($data);
+            DB::table('catalogues')->insert($data);
 
-            // Vérifier si c'est une requête AJAX
             if ($request->ajax()) {
                 return response()->json([
                     'success' => true,
@@ -142,12 +177,10 @@ class CatalogueController extends Controller
                 ]);
             }
 
-            // Ajout du message flash pour SweetAlert2
             return redirect()->back()->with('success', 'Application ajoutée avec succès.');
         } catch (\Exception $e) {
             Log::error('Erreur insertion catalogue: ' . $e->getMessage());
 
-            // Vérifier si c'est une requête AJAX
             if ($request->ajax()) {
                 return response()->json([
                     'success' => false,
@@ -155,10 +188,10 @@ class CatalogueController extends Controller
                 ], 500);
             }
 
-            // Ajout du message flash pour SweetAlert2
             return redirect()->back()->with('error', 'Erreur lors de l\'ajout de l\'application.');
         }
     }
+
 
 
     /**
@@ -211,16 +244,34 @@ class CatalogueController extends Controller
     {
         try {
             DB::table('catalogues')->where('id', $id)->update([
-                'app_name'     => $request->input('app_name'),
-                'adr_serv'     => $request->input('adr_serv'),
-                'env_dev'      => $request->input('env_dev'),
-                'env_test'     => $request->input('env_test'),
-                'env_prod'     => $request->input('env_prod'),
-                'sys_exp'      => $request->input('sys_exp'),
-                'lang_dev'     => $request->input('lang_dev'),
-                'adr_serv_bd'  => $request->input('adr_serv_bd'),
-                'sys_exp_bd'   => $request->input('sys_exp_bd'),
-                'critical'     => $request->input('critical'),
+                'app_name' => $request->input('app_name'),
+
+                // ENV DEV
+                'env_dev' => $request->input('env_dev'),
+                'adr_serv_dev' => $request->input('adr_serv_dev'),
+                'sys_exp_dev' => $request->input('sys_exp_dev'),
+                'adr_serv_bd_dev' => $request->input('adr_serv_bd_dev'),
+                'sys_exp_bd_dev' => $request->input('sys_exp_bd_dev'),
+                'lang_deve_dev' => $request->input('lang_deve_dev'),
+                'critical_dev' => $request->input('critical_dev'),
+
+                // ENV PROD
+                'env_prod' => $request->input('env_prod'),
+                'adr_serv_prod' => $request->input('adr_serv_prod'),
+                'sys_exp_prod' => $request->input('sys_exp_prod'),
+                'adr_serv_bd_prod' => $request->input('adr_serv_bd_prod'),
+                'sys_exp_bd_prod' => $request->input('sys_exp_bd_prod'),
+                'lang_deve_prod' => $request->input('lang_deve_prod'),
+                'critical_prod' => $request->input('critical_prod'),
+
+                // ENV TEST
+                'env_test' => $request->input('env_test'),
+                'adr_serv_test' => $request->input('adr_serv_test'),
+                'sys_exp_test' => $request->input('sys_exp_test'),
+                'adr_serv_bd_test' => $request->input('adr_serv_bd_test'),
+                'sys_exp_bd_test' => $request->input('sys_exp_bd_test'),
+                'lang_deve_test' => $request->input('lang_deve_test'),
+                'critical_test' => $request->input('critical_test'),
             ]);
 
             return response()->json([
@@ -235,6 +286,7 @@ class CatalogueController extends Controller
             ], 500);
         }
     }
+
 
 
 
@@ -295,6 +347,9 @@ class CatalogueController extends Controller
             ], 500);
         }
     }
+
+
+
 
 
 

@@ -1,17 +1,15 @@
-  <footer class="footer">
-      <div class="container-fluid">
-          <div class="row text-muted">
-              <div class="col-6 text-start">
-                  <p class="mb-0">
-                      <a class="text-muted" href="https://adminkit.io/" target="_blank"><strong>AdminKit</strong></a> - <a
-                          class="text-muted" href="https://adminkit.io/" target="_blank"><strong>Bootstrap Admin
-                              Template</strong></a> &copy;
-                  </p>
-              </div>
-              <div class="col-6 text-end">
-                  <ul class="list-inline">
-                  </ul>
-              </div>
-          </div>
-      </div>
-  </footer>
+<footer class="footer">
+    <div class="container-fluid">
+        <div class="row text-muted">
+            <div class="col-12 text-center">
+                <div class="developer-credit">
+                    <span class="badge bg-primary bg-opacity-10 text-primary p-2">
+                        <i class="bi bi-code-square me-1"></i>
+                        KOFFI KAN JEAN-EUDES
+                        <small class="ms-1">Stagiaire IT Développeur CNPS</small>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
