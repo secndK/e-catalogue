@@ -11,13 +11,19 @@
                     @csrf
                     <div class="search-container">
                         <div class="search-box {{ !empty($search_query) ? 'active' : '' }}" id="searchBox">
-                            <div class="search-icon" id="searchIcon">🔍</div>
+                            <div class="search-icon" id="searchIcon">
+                                <i class="bi bi-search"></i> <!-- Utilisation d'une icône Bootstrap Icons -->
+                            </div>
                             <input type="text" class="search-input" id="searchInput" name="rechercher"
                                 placeholder="Rechercher une application..." value="{{ $search_query ?? '' }}">
-                            <div class="close-btn" id="closeBtn">✕</div>
+                            <div class="close-btn" id="closeBtn">
+                                <i class="bi bi-x"></i> <!-- Utilisation d'une icône Bootstrap Icons -->
+                            </div>
                         </div>
+
                     </div>
                 </form>
+                <!-- Bouton pour afficher toutes les applications -->
 
                 <!-- Résultats de recherche -->
                 <!-- Résultats de recherche -->
@@ -93,7 +99,7 @@
                                 @endforeach
                             </div>
                         @else
-                            <div class="col-12">
+                            <div class="col-12 mt-0">
                                 <div class="text-center py-5">
                                     <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
                                     <h4 class="text-muted mt-3">Aucun résultat trouvé</h4>
@@ -102,10 +108,9 @@
                             </div>
                         @endif
                     @else
-                        <div class="col-12">
+                        <div class="col-12 mt-0">
                             <div class="text-center py-5">
-                                <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
-                                <h4 class="text-muted mt-3">Recherchez une application</h4>
+
                                 <p class="text-muted">Utilisez la barre de recherche pour trouver des applications</p>
                             </div>
                         </div>
@@ -366,15 +371,8 @@
 @endsection
 
 @section('script')
-    <!-- SweetAlert2 CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.10.1/sweetalert2.min.js"
-        integrity="sha512-oGPdYZUv人不            integrity="
-        sha512-oGPdYZUvNyDCQh0iiS1m6hXB8ZfpjI8hKZdLVJVJZJzJLjn5q0/+qF6mNYWrF8PdQy3vZDUe6nqvlbV5kY6+g=="
-                                                                                                                                                                                                                                                                                                                                                            crossorigin="
-        anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous">
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.10.1/sweetalert2.min.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -385,6 +383,7 @@
             const searchForm = document.getElementById('searchForm');
             const searchResults = document.getElementById('searchResults');
             const createForm = document.querySelector('#createAppModal form');
+            const showAllAppsBtn = document.getElementById('showAllAppsBtn'); // Nouveau sélecteur pour le bouton
 
             // Handle flash messages for non-AJAX submissions
             @if (session('success'))
@@ -547,16 +546,16 @@
                                         </h5>
 
                                         ${item.adr_serv ? `
-                                                                                                                                                                                                                                                                                                                                                                                                <div class="d-flex align-items-center mb-2">
-                                                                                                                                                                                                                                                                                                                                                                                                    <i class="bi bi-hdd-network me-2 text-muted"></i>
-                                                                                                                                                                                                                                                                                                                                                                                                    <small class="text-muted">${item.adr_serv}</small>
-                                                                                                                                                                                                                                                                                                                                                                                                </div>` : ''}
+                                                                                                <div class="d-flex align-items-center mb-2">
+                                                                                                    <i class="bi bi-hdd-network me-2 text-muted"></i>
+                                                                                                    <small class="text-muted">${item.adr_serv}</small>
+                                                                                                </div>` : ''}
 
                                         ${item.env_prod ? `
-                                                                                                                                                                                                                                                                                                                                                                                                <div class="d-flex align-items-center">
-                                                                                                                                                                                                                                                                                                                                                                                                    <span class="badge bg-success me-2">PROD</span>
-                                                                                                                                                                                                                                                                                                                                                                                                    <small class="text-muted">${item.env_prod}</small>
-                                                                                                                                                                                                                                                                                                                                                                                                </div>` : ''}
+                                                                                                <div class="d-flex align-items-center">
+                                                                                                    <span class="badge bg-success me-2">PROD</span>
+                                                                                                    <small class="text-muted">${item.env_prod}</small>
+                                                                                                </div>` : ''}
                                     </div>
                                 </div>
                             </div>
@@ -577,6 +576,60 @@
 
                 document.getElementById('searchResults').innerHTML = html;
             }
+
+
+            // Gestion du bouton "Afficher toutes les applications"
+            if (showAllAppsBtn) {
+                showAllAppsBtn.addEventListener('click', () => {
+                    Swal.fire({
+                        title: 'Chargement...',
+                        text: 'Récupération de toutes les applications',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    fetch('{{ route('catalogue.all') }}', {
+                            method: 'GET',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            Swal.close();
+                            if (data.success) {
+                                searchInput.value = ''; // Réinitialiser la barre de recherche
+                                searchBox.classList.remove('active'); // Fermer la barre de recherche
+                                updateResults(data.data, ''); // Afficher toutes les applications
+                                refreshRecentSearches(); // Rafraîchir les recherches récentes
+                            } else {
+                                Swal.fire({
+                                    title: 'Erreur',
+                                    text: data.message ||
+                                        'Impossible de récupérer les applications',
+                                    icon: 'error',
+                                    confirmButtonColor: '#dc3545'
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            Swal.close();
+                            console.error('Erreur:', error);
+                            Swal.fire({
+                                title: 'Erreur de connexion',
+                                text: 'Impossible de communiquer avec le serveur',
+                                icon: 'error',
+                                confirmButtonColor: '#dc3545'
+                            });
+                        });
+                });
+            }
+
 
 
             if (createForm) {
@@ -633,14 +686,14 @@
                                 Swal.fire({
                                     title: 'Parfait !',
                                     html: `
-                                        <div class="text-center">
-                                            <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
-                                            <br><br>
-                                            <strong>Application créée avec succès !</strong>
-                                            <br>
-                                            <small class="text-muted">La page va se recharger automatiquement</small>
-                                        </div>
-                                    `,
+                                    <div class="text-center">
+                                        <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                                        <br><br>
+                                        <strong>Application créée avec succès !</strong>
+                                        <br>
+                                        <small class="text-muted">La page va se recharger automatiquement</small>
+                                    </div>
+                                `,
                                     icon: 'success',
                                     showConfirmButton: true,
                                     confirmButtonText: 'Voir le résultat',
@@ -671,13 +724,13 @@
                                 Swal.fire({
                                     title: 'Oops... Erreur !',
                                     html: `
-                                        <div class="text-center">
-                                            <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 4rem;"></i>
-                                            <br><br>
-                                            <strong>${errorMessage}</strong>
-                                            ${errorDetails ? '<br><br>' + errorDetails : ''}
-                                        </div>
-                                    `,
+                                    <div class="text-center">
+                                        <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 4rem;"></i>
+                                        <br><br>
+                                        <strong>${errorMessage}</strong>
+                                        ${errorDetails ? '<br><br>' + errorDetails : ''}
+                                    </div>
+                                `,
                                     icon: 'error',
                                     confirmButtonText: 'Réessayer',
                                     confirmButtonColor: '#dc3545',
@@ -694,14 +747,14 @@
                             Swal.fire({
                                 title: 'Erreur de connexion !',
                                 html: `
-                                    <div class="text-center">
-                                        <i class="bi bi-wifi-off text-warning" style="font-size: 4rem;"></i>
-                                        <br><br>
-                                        <strong>Impossible de communiquer avec le serveur</strong>
-                                        <br>
-                                        <small class="text-muted">Vérifiez votre connexion internet</small>
-                                    </div>
-                                `,
+                                <div class="text-center">
+                                    <i class="bi bi-wifi-off text-warning" style="font-size: 4rem;"></i>
+                                    <br><br>
+                                    <strong>Impossible de communiquer avec le serveur</strong>
+                                    <br>
+                                    <small class="text-muted">Vérifiez votre connexion internet</small>
+                                </div>
+                            `,
                                 icon: 'error',
                                 confirmButtonText: 'OK',
                                 confirmButtonColor: '#dc3545',
@@ -715,9 +768,6 @@
                         });
                 });
             }
-
-
-
 
             // Handle app details modal
             document.addEventListener('shown.bs.modal', function(event) {
@@ -766,9 +816,9 @@
                                     const recentHeader = document.createElement('li');
                                     recentHeader.className = 'sidebar-header recent-searches-header';
                                     recentHeader.innerHTML = `
-                                        Recherches Récentes
-                                        <i class="bi bi-clock-history float-end"></i>
-                                    `;
+                                    Recherches Récentes
+                                    <i class="bi bi-clock-history float-end"></i>
+                                `;
                                     sidebarNav.insertBefore(recentHeader, menuItem.nextSibling);
 
                                     // Résultats
@@ -776,11 +826,11 @@
                                         const recentItem = document.createElement('li');
                                         recentItem.className = 'sidebar-item recent-search-item';
                                         recentItem.innerHTML = `
-                                            <a class="sidebar-link recent-search-link" href="#" data-search="${search.search_term}">
-                                                <i class="bi bi-search"></i>
-                                                <span class="align-middle">${search.search_term}</span>
-                                                <span class="badge bg-primary rounded-pill float-end">${search.results_count}</span>
-                                            </a>`;
+                                        <a class="sidebar-link recent-search-link" href="#" data-search="${search.search_term}">
+                                            <i class="bi bi-search"></i>
+                                            <span class="align-middle">${search.search_term}</span>
+                                            <span class="badge bg-primary rounded-pill float-end">${search.results_count}</span>
+                                        </a>`;
                                         sidebarNav.insertBefore(recentItem, recentHeader.nextSibling);
                                     });
                                 }
@@ -806,19 +856,19 @@
 
                     // Spinner de chargement
                     modalBody.innerHTML = `
-                <div class="text-center py-4">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Chargement...</span>
-                    </div>
-                    <p class="mt-2">Chargement des données...</p>
-                </div>
-            `;
+                        <div class="text-center py-4">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Chargement...</span>
+                            </div>
+                            <p class="mt-2">Chargement des données...</p>
+                        </div>
+                    `;
 
                     editModal.show();
 
                     // Charger les données
                     fetch(`/catalogue/${appId}/edit`, {
-                            method: 'GET', // Explicitement GET
+                            method: 'GET',
                             headers: {
                                 'Accept': 'application/json',
                                 'X-Requested-With': 'XMLHttpRequest',
@@ -898,9 +948,9 @@
                 // Désactiver le bouton
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = `
-            <span class="spinner-border spinner-border-sm me-1"></span>
-            Enregistrement...
-        `;
+                    <span class="spinner-border spinner-border-sm me-1"></span>
+                    Enregistrement...
+                `;
 
                 // Indicateur de chargement
                 Swal.fire({
@@ -912,26 +962,23 @@
 
                 // IMPORTANT: Utiliser POST avec _method=PUT pour Laravel
                 fetch(form.action, {
-                        method: 'POST', // ✅ POST (pas PUT directement)
+                        method: 'POST',
                         body: formData,
                         headers: {
                             'X-Requested-With': 'XMLHttpRequest',
                             'Accept': 'application/json',
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                            // Pas de Content-Type car FormData le gère automatiquement
                         }
                     })
                     .then(response => {
                         console.log('📡 Statut mise à jour:', response.status);
 
                         if (!response.ok) {
-                            // Gestion détaillée des erreurs HTTP
                             if (response.status === 405) {
                                 throw new Error('Méthode non autorisée. Vérifiez vos routes Laravel.');
                             } else if (response.status === 404) {
                                 throw new Error('Application non trouvée.');
                             } else if (response.status === 422) {
-                                // Erreurs de validation
                                 return response.json().then(data => {
                                     const errors = data.errors ? Object.values(data.errors)
                                         .flat().join('\n') : data.message;
@@ -960,7 +1007,6 @@
                             timer: 2000,
                             timerProgressBar: true
                         }).then(() => {
-                            // Fermer le modal et recharger
                             const editModal = bootstrap.Modal.getInstance(document
                                 .getElementById('editAppModal'));
                             editModal.hide();
@@ -983,6 +1029,99 @@
                         submitBtn.innerHTML = originalBtnText;
                     });
             });
+
+            // Gestion de la suppression d'application
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.delete-app')) {
+                    e.preventDefault();
+                    const button = e.target.closest('.delete-app');
+                    const appId = button.getAttribute('data-app-id');
+                    const appName = button.getAttribute('data-app-name') || 'cette application';
+
+                    Swal.fire({
+                        title: 'Confirmer la suppression',
+                        html: `Êtes-vous sûr de vouloir supprimer <strong>${appName}</strong> ?`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Oui, supprimer',
+                        cancelButtonText: 'Annuler',
+                        backdrop: `
+                            rgba(0,0,0,0.7)
+                            url("${window.location.origin}/images/trash-icon.png")
+                            center top
+                            no-repeat
+                        `,
+                        showClass: {
+                            popup: 'animate__animated animate__fadeInDown'
+                        },
+                        hideClass: {
+                            popup: 'animate__animated animate__fadeOutUp'
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            deleteApplication(appId);
+                        }
+                    });
+                }
+            });
+
+            // Fonction pour supprimer une application via AJAX
+            async function deleteApplication(appId) {
+                try {
+                    // Afficher un indicateur de chargement
+                    const swalInstance = Swal.fire({
+                        title: 'Suppression en cours',
+                        html: 'Veuillez patienter...',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    const response = await fetch(`/catalogue/${appId}/delete`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    // Fermer l'indicateur de chargement
+                    await swalInstance.close();
+
+                    if (response.ok && data.success) {
+                        // Afficher un message de succès
+                        Swal.fire({
+                            title: 'Supprimé !',
+                            text: data.message || 'Application supprimée avec succès',
+                            icon: 'success',
+                            confirmButtonColor: '#28a745',
+                            timer: 2000,
+                            timerProgressBar: true,
+                            showConfirmButton: false
+                        }).then(() => {
+                            // Recharger la page ou actualiser dynamiquement le contenu
+                            location.reload();
+                        });
+                    } else {
+                        throw new Error(data.message || 'Erreur lors de la suppression');
+                    }
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    Swal.fire({
+                        title: 'Erreur !',
+                        text: error.message,
+                        icon: 'error',
+                        confirmButtonColor: '#d33'
+                    });
+                }
+            }
+
             // Clic en dehors pour fermer la barre
             document.addEventListener('click', (e) => {
                 if (!searchBox.contains(e.target) && searchInput.value.trim() === '') {

@@ -9,6 +9,15 @@
                 Menu Principal
             </li>
 
+
+            {{-- <!-- Nouveau lien "Toutes les applications" -->
+            <li class="sidebar-item">
+                <a class="sidebar-link" href="{{ route('catalogue.all') }}" id="showAllApps">
+                    <i class="bi bi-grid-fill"></i>
+                    <span class="align-middle">Toutes les applications</span>
+                </a>
+            </li> --}}
+
             <li class="sidebar-item">
                 <a class="sidebar-link" href="#" data-bs-toggle="modal" data-bs-target="#createAppModal">
                     <i class="bi bi-plus-circle-fill"></i>

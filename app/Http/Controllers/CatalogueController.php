@@ -32,17 +32,22 @@ class CatalogueController extends Controller
      */
     public function getAllCatalogue()
     {
-        // Récupérer toutes les applications sans limite
-        $all_catalogue = DB::connection('mysql')->select('SELECT * FROM catalogues');
-        $recentSearches = $this->getRecentSearchesData();
-
-        return view('pages.Home.accueil', [
-            'catalogue' => collect($all_catalogue),
-            'recent_searches' => $recentSearches,
-            'search_query' => '',
-            'show_all' => true,
-            'total_apps' => count($all_catalogue)
-        ]);
+        try {
+            $all_catalogue = DB::connection('mysql')->select('SELECT * FROM catalogues');
+            $recentSearches = $this->getRecentSearchesData();
+            return response()->json([
+                'success' => true,
+                'data' => $all_catalogue,
+                'recent_searches' => $recentSearches,
+                'search_query' => '',
+                'total_apps' => count($all_catalogue)
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur serveur : ' . $e->getMessage()
+            ], 500);
+        }
     }
     /**Cette fonction servira à recupérer l'ensemble des données pour les afficher dans la vue
      * après avoir entre le nom au l'ip correspondant de l'application
@@ -242,7 +247,7 @@ class CatalogueController extends Controller
                 ->select('search_term', DB::raw('MAX(results_count) as results_count'))
                 ->groupBy('search_term')
                 ->orderBy('created_at', 'desc')
-                ->limit(5)
+                ->limit(15)
                 ->get();
         }
 
