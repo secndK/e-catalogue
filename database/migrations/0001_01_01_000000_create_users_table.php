@@ -13,10 +13,16 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
+            $table->string('mat_ag')->unique(); // matricule de l'agent
+            $table->string('nom_ag'); // nom de l'agent
+            $table->string('pren_ag'); // prenom de l'agent
+            $table->string('email')->unique(); // email de l'agent
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('dir_ag'); // direction de l'agent
+            $table->string('loc_ag'); // localisation de l'agent
+            $table->string('sta_ag')->nullable(); // statut de l'agent
+            $table->string('role')->nullable(); // rôle de l'agent
             $table->rememberToken();
             $table->timestamps();
         });

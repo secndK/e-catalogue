@@ -14,10 +14,14 @@ class CatalogueController extends Controller
     /**
      * Cette fonction servira à récupérer l'ensemble des données pour les afficher dans la vue
      */
+
+
     public function getCatalogue()
     {
         $array_catalogue = DB::connection('mysql')->select('SELECT * FROM catalogues LIMIT 15 ');
         $recentSearches = $this->getRecentSearchesData();
+
+        // dd($array_catalogue);
 
         return view('pages.Home.accueil', [
             'catalogue' => collect($array_catalogue),
@@ -58,22 +62,36 @@ class CatalogueController extends Controller
         $results = [];
 
         if (!empty($searchQuery)) {
+            $lowerSearch = strtolower($searchQuery);
             $results = DB::connection('mysql')->select(
                 'SELECT * FROM catalogues
-                WHERE LOWER(app_name) LIKE ?
-                OR env_dev = ? OR env_prod = ? OR env_test = ? OR adr_serv_prod LIKE ?',
-                ['%' . strtolower($searchQuery) . '%', $searchQuery, $searchQuery, $searchQuery, '%' . $searchQuery . '%']
+        WHERE LOWER(app_name) LIKE ?
+        OR LOWER(url_app) LIKE ?
+        OR LOWER(url_doc) LIKE ?
+        OR LOWER(url_git) LIKE ?
+        OR LOWER(adr_serv_dev) = ?
+        OR LOWER(adr_serv_test) = ?
+        OR LOWER(adr_serv_prod) LIKE ?',
+                [
+                    '%' . $lowerSearch . '%',
+                    '%' . $lowerSearch . '%',
+                    '%' . $lowerSearch . '%',
+                    '%' . $lowerSearch . '%',
+                    $lowerSearch,
+                    $lowerSearch,
+                    '%' . $lowerSearch . '%'
+                ]
             );
-
-            if (session()->getId()) {
-                SearchHistory::addSearch(
-                    $searchQuery,
-                    count($results),
-                    session()->getId(),
-                    $request->ip()
-                );
-            }
+            // ✅ Enregistrement de l'historique, même si AJAX
+            SearchHistory::create([
+                'search_term' => $searchQuery,
+                'user_ip' => $request->ip(),
+                'user_session' => session()->getId(),
+                'results_count' => count($results),
+            ]);
         }
+
+
 
         $recentSearches = $this->getRecentSearchesData();
 
@@ -86,6 +104,9 @@ class CatalogueController extends Controller
             ]);
         }
 
+
+
+
         return view('pages.Home.accueil', [
             'catalogue' => collect($results),
             'search_query' => $searchQuery,
@@ -94,7 +115,7 @@ class CatalogueController extends Controller
     }
 
     // Méthodes utilitaires privées
-    private function getRecentSearchesData()
+    public function getRecentSearchesData()
     {
         return session()->getId()
             ? SearchHistory::getRecentSearches(session()->getId())
@@ -106,38 +127,53 @@ class CatalogueController extends Controller
     public function createCatalogue(Request $request)
     {
         $request->validate([
-            'app_name' => 'required|string',
+            'app_name' => 'required|string|max:255',
+            'desc_app' => 'nullable|string|max:255',
+
+            'url_app' => 'nullable|url|max:255',
+            'url_doc' => 'nullable|url|max:255',
+            'url_git' => 'nullable|url|max:255',
 
             // DEV
-            'env_dev' => 'nullable|string',
-            'adr_serv_dev' => 'nullable|string',
-            'sys_exp_dev' => 'nullable|string',
-            'adr_serv_bd_dev' => 'nullable|string',
-            'sys_exp_bd_dev' => 'nullable|string',
-            'lang_deve_dev' => 'nullable|string',
-            'critical_dev' => 'nullable|string',
+            'env_dev' => 'nullable|string|max:255',
+            'adr_serv_dev' => 'nullable|string|max:255',
+            'sys_exp_dev' => 'nullable|string|max:255',
+            'adr_serv_bd_dev' => 'nullable|string|max:255',
+            'sys_exp_bd_dev' => 'nullable|string|max:255',
+            'lang_deve_dev' => 'nullable|string|max:255',
+            'critical_dev' => 'nullable|array',
+            'critical_dev.*' => 'string|max:255',
+            'statut_dev' => 'nullable|string|max:255',
 
             // PROD
-            'env_prod' => 'nullable|string',
-            'adr_serv_prod' => 'nullable|string',
-            'sys_exp_prod' => 'nullable|string',
-            'adr_serv_bd_prod' => 'nullable|string',
-            'sys_exp_bd_prod' => 'nullable|string',
-            'lang_deve_prod' => 'nullable|string',
-            'critical_prod' => 'nullable|string',
+            'env_prod' => 'nullable|string|max:255',
+            'adr_serv_prod' => 'nullable|string|max:255',
+            'sys_exp_prod' => 'nullable|string|max:255',
+            'adr_serv_bd_prod' => 'nullable|string|max:255',
+            'sys_exp_bd_prod' => 'nullable|string|max:255',
+            'lang_deve_prod' => 'nullable|string|max:255',
+            'critical_prod' => 'nullable|array',
+            'critical_prod.*' => 'string|max:255',
+            'statut_prod' => 'nullable|string|max:255',
 
             // TEST
-            'env_test' => 'nullable|string',
-            'adr_serv_test' => 'nullable|string',
-            'sys_exp_test' => 'nullable|string',
-            'adr_serv_bd_test' => 'nullable|string',
-            'sys_exp_bd_test' => 'nullable|string',
-            'lang_deve_test' => 'nullable|string',
-            'critical_test' => 'nullable|string',
+            'env_test' => 'nullable|string|max:255',
+            'adr_serv_test' => 'nullable|string|max:255',
+            'sys_exp_test' => 'nullable|string|max:255',
+            'adr_serv_bd_test' => 'nullable|string|max:255',
+            'sys_exp_bd_test' => 'nullable|string|max:255',
+            'lang_deve_test' => 'nullable|string|max:255',
+            'critical_test' => 'nullable|array',
+            'critical_test.*' => 'string|max:255',
+            'statut_test' => 'nullable|string|max:255',
         ]);
 
         $data = [
             'app_name' => $request->app_name,
+            'desc_app' => $request->desc_app,
+            'url_app' => $request->url_app,
+            'url_doc' => $request->url_doc,
+            'url_git' => $request->url_git,
 
             // DEV
             'env_dev' => $request->env_dev,
@@ -146,7 +182,9 @@ class CatalogueController extends Controller
             'adr_serv_bd_dev' => $request->adr_serv_bd_dev,
             'sys_exp_bd_dev' => $request->sys_exp_bd_dev,
             'lang_deve_dev' => $request->lang_deve_dev,
-            'critical_dev' => $request->critical_dev,
+            'critical_dev' => json_encode($request->input('critical_dev', [])),
+
+            'statut_dev' => $request->statut_dev,
 
             // PROD
             'env_prod' => $request->env_prod,
@@ -155,7 +193,8 @@ class CatalogueController extends Controller
             'adr_serv_bd_prod' => $request->adr_serv_bd_prod,
             'sys_exp_bd_prod' => $request->sys_exp_bd_prod,
             'lang_deve_prod' => $request->lang_deve_prod,
-            'critical_prod' => $request->critical_prod,
+            'critical_prod' => json_encode($request->input('critical_prod', [])),
+            'statut_prod' => $request->statut_prod,
 
             // TEST
             'env_test' => $request->env_test,
@@ -164,8 +203,11 @@ class CatalogueController extends Controller
             'adr_serv_bd_test' => $request->adr_serv_bd_test,
             'sys_exp_bd_test' => $request->sys_exp_bd_test,
             'lang_deve_test' => $request->lang_deve_test,
-            'critical_test' => $request->critical_test,
+            'critical_test' => json_encode($request->input('critical_test', [])),
+            'statut_test' => $request->statut_test,
         ];
+
+
 
         try {
             DB::table('catalogues')->insert($data);
@@ -191,7 +233,6 @@ class CatalogueController extends Controller
             return redirect()->back()->with('error', 'Erreur lors de l\'ajout de l\'application.');
         }
     }
-
 
 
     /**
@@ -242,48 +283,108 @@ class CatalogueController extends Controller
 
     public function updateCatalogue(Request $request, $id)
     {
+        $request->validate([
+            'app_name' => 'required|string|max:255',
+            'desc_app' => 'nullable|string|max:255',
+
+            'url_app' => 'nullable|url|max:255',
+            'url_doc' => 'nullable|url|max:255',
+            'url_git' => 'nullable|url|max:255',
+
+            // DEV
+            'env_dev' => 'nullable|string|max:255',
+            'adr_serv_dev' => 'nullable|string|max:255',
+            'sys_exp_dev' => 'nullable|string|max:255',
+            'adr_serv_bd_dev' => 'nullable|string|max:255',
+            'sys_exp_bd_dev' => 'nullable|string|max:255',
+            'lang_deve_dev' => 'nullable|string|max:255', // Changé de lang_deve_dev à lang_dev
+            'critical_dev' => 'nullable|array',
+            'critical_dev.*' => 'string|max:255',
+            'statut_dev' => 'nullable|string|max:255',
+
+            // PROD
+            'env_prod' => 'nullable|string|max:255',
+            'adr_serv_prod' => 'nullable|string|max:255',
+            'sys_exp_prod' => 'nullable|string|max:255',
+            'adr_serv_bd_prod' => 'nullable|string|max:255',
+            'sys_exp_bd_prod' => 'nullable|string|max:255',
+            'lang_deve_prod' => 'nullable|string|max:255', // Changé de lang_deve_prod à lang_dev
+            'critical_prod' => 'nullable|array',
+            'critical_prod.*' => 'string|max:255',
+            'statut_prod' => 'nullable|string|max:255',
+
+            // TEST
+            'env_test' => 'nullable|string|max:255',
+            'adr_serv_test' => 'nullable|string|max:255',
+            'sys_exp_test' => 'nullable|string|max:255',
+            'adr_serv_bd_test' => 'nullable|string|max:255',
+            'sys_exp_bd_test' => 'nullable|string|max:255',
+            'lang_deve_test' => 'nullable|string|max:255', // Changé de lang_deve_test à lang_dev
+            'critical_test' => 'nullable|array',
+            'critical_test.*' => 'string|max:255',
+            'statut_test' => 'nullable|string|max:255',
+        ]);
+
+        $data = [
+            'app_name' => $request->app_name,
+            'desc_app' => $request->desc_app,
+            'url_app' => $request->url_app,
+            'url_doc' => $request->url_doc,
+            'url_git' => $request->url_git,
+
+            // DEV
+            'env_dev' => $request->env_dev,
+            'adr_serv_dev' => $request->adr_serv_dev,
+            'sys_exp_dev' => $request->sys_exp_dev,
+            'adr_serv_bd_dev' => $request->adr_serv_bd_dev,
+            'sys_exp_bd_dev' => $request->sys_exp_bd_dev,
+            'lang_deve_dev' => $request->lang_dev, // Changé de lang_deve_dev à lang_dev
+            'critical_dev' => json_encode($request->input('critical_dev', [])),
+            'statut_dev' => $request->statut_dev,
+
+            // PROD
+            'env_prod' => $request->env_prod,
+            'adr_serv_prod' => $request->adr_serv_prod,
+            'sys_exp_prod' => $request->sys_exp_prod,
+            'adr_serv_bd_prod' => $request->adr_serv_bd_prod,
+            'sys_exp_bd_prod' => $request->sys_exp_bd_prod,
+            'lang_deve_prod' => $request->lang_dev, // Changé de lang_deve_prod à lang_dev
+            'critical_prod' => json_encode($request->input('critical_prod', [])),
+            'statut_prod' => $request->statut_prod,
+
+            // TEST
+            'env_test' => $request->env_test,
+            'adr_serv_test' => $request->adr_serv_test,
+            'sys_exp_test' => $request->sys_exp_test,
+            'adr_serv_bd_test' => $request->adr_serv_bd_test,
+            'sys_exp_bd_test' => $request->sys_exp_bd_test,
+            'lang_deve_test' => $request->lang_dev, // Changé de lang_deve_test à lang_dev
+            'critical_test' => json_encode($request->input('critical_test', [])),
+            'statut_test' => $request->statut_test,
+        ];
+
         try {
-            DB::table('catalogues')->where('id', $id)->update([
-                'app_name' => $request->input('app_name'),
+            DB::table('catalogues')->where('id', $id)->update($data);
 
-                // ENV DEV
-                'env_dev' => $request->input('env_dev'),
-                'adr_serv_dev' => $request->input('adr_serv_dev'),
-                'sys_exp_dev' => $request->input('sys_exp_dev'),
-                'adr_serv_bd_dev' => $request->input('adr_serv_bd_dev'),
-                'sys_exp_bd_dev' => $request->input('sys_exp_bd_dev'),
-                'lang_deve_dev' => $request->input('lang_deve_dev'),
-                'critical_dev' => $request->input('critical_dev'),
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Application mise à jour avec succès.'
+                ]);
+            }
 
-                // ENV PROD
-                'env_prod' => $request->input('env_prod'),
-                'adr_serv_prod' => $request->input('adr_serv_prod'),
-                'sys_exp_prod' => $request->input('sys_exp_prod'),
-                'adr_serv_bd_prod' => $request->input('adr_serv_bd_prod'),
-                'sys_exp_bd_prod' => $request->input('sys_exp_bd_prod'),
-                'lang_deve_prod' => $request->input('lang_deve_prod'),
-                'critical_prod' => $request->input('critical_prod'),
-
-                // ENV TEST
-                'env_test' => $request->input('env_test'),
-                'adr_serv_test' => $request->input('adr_serv_test'),
-                'sys_exp_test' => $request->input('sys_exp_test'),
-                'adr_serv_bd_test' => $request->input('adr_serv_bd_test'),
-                'sys_exp_bd_test' => $request->input('sys_exp_bd_test'),
-                'lang_deve_test' => $request->input('lang_deve_test'),
-                'critical_test' => $request->input('critical_test'),
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Application mise à jour avec succès.'
-            ]);
+            return redirect()->back()->with('success', 'Application mise à jour avec succès.');
         } catch (\Exception $e) {
-            Log::error("Erreur MAJ application: " . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Erreur lors de la mise à jour.'
-            ], 500);
+            Log::error('Erreur mise à jour catalogue: ' . $e->getMessage());
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Erreur lors de la mise à jour de l\'application.'
+                ], 500);
+            }
+
+            return redirect()->back()->with('error', 'Erreur lors de la mise à jour de l\'application.');
         }
     }
 

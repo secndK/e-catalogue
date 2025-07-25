@@ -55,32 +55,6 @@
     @yield('style')
 
 
-    <style>
-        /* Style pour le modal */
-        #createAppModal .modal-content {
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        #createAppModal .form-label {
-            font-weight: 500;
-            color: #495057;
-        }
-
-        #createAppModal .bi {
-            font-size: 1.1em;
-        }
-
-        /* Animation d'ouverture */
-        .modal.fade .modal-dialog {
-            transform: translateY(-50px);
-            transition: transform 0.3s ease-out;
-        }
-
-        .modal.show .modal-dialog {
-            transform: none;
-        }
-    </style>
 
 
 
@@ -115,6 +89,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.10.1/sweetalert2.min.js"
         integrity="sha512-oGPdYZUvNyDCQh0iiS1m6hXB8ZfpjI8hKZdLVJVJZJzJLjn5q0/+qF6mNYWrF8PdQy3vZDUe6nqvlbV5kY6+g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+
+
+
 
 </body>
 
