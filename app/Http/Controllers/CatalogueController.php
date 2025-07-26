@@ -123,18 +123,24 @@ class CatalogueController extends Controller
     }
 
 
+
+    /**
+     * Nettoie et formate les données critiques
+     */
+
+
+
     /** Cette fonction servira à ajouter une nouvelle app à la bd */
     public function createCatalogue(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'app_name' => 'required|string|max:255',
             'desc_app' => 'nullable|string|max:255',
-
             'url_app' => 'nullable|url|max:255',
             'url_doc' => 'nullable|url|max:255',
             'url_git' => 'nullable|url|max:255',
 
-            // DEV
+            // Environnement DEV
             'env_dev' => 'nullable|string|max:255',
             'adr_serv_dev' => 'nullable|string|max:255',
             'sys_exp_dev' => 'nullable|string|max:255',
@@ -145,7 +151,7 @@ class CatalogueController extends Controller
             'critical_dev.*' => 'string|max:255',
             'statut_dev' => 'nullable|string|max:255',
 
-            // PROD
+            // Environnement PROD
             'env_prod' => 'nullable|string|max:255',
             'adr_serv_prod' => 'nullable|string|max:255',
             'sys_exp_prod' => 'nullable|string|max:255',
@@ -156,7 +162,7 @@ class CatalogueController extends Controller
             'critical_prod.*' => 'string|max:255',
             'statut_prod' => 'nullable|string|max:255',
 
-            // TEST
+            // Environnement TEST
             'env_test' => 'nullable|string|max:255',
             'adr_serv_test' => 'nullable|string|max:255',
             'sys_exp_test' => 'nullable|string|max:255',
@@ -169,89 +175,59 @@ class CatalogueController extends Controller
         ]);
 
         $data = [
-            'app_name' => $request->app_name,
-            'desc_app' => $request->desc_app,
-            'url_app' => $request->url_app,
-            'url_doc' => $request->url_doc,
-            'url_git' => $request->url_git,
+            'app_name' => $validatedData['app_name'],
+            'desc_app' => $validatedData['desc_app'],
+            'url_app' => $validatedData['url_app'],
+            'url_doc' => $validatedData['url_doc'],
+            'url_git' => $validatedData['url_git'],
 
             // DEV
-            'env_dev' => $request->env_dev,
-            'adr_serv_dev' => $request->adr_serv_dev,
-            'sys_exp_dev' => $request->sys_exp_dev,
-            'adr_serv_bd_dev' => $request->adr_serv_bd_dev,
-            'sys_exp_bd_dev' => $request->sys_exp_bd_dev,
-            'lang_deve_dev' => $request->lang_deve_dev,
-            'critical_dev' => json_encode($request->input('critical_dev', [])),
-
-            'statut_dev' => $request->statut_dev,
+            'env_dev' => $validatedData['env_dev'],
+            'adr_serv_dev' => $validatedData['adr_serv_dev'],
+            'sys_exp_dev' => $validatedData['sys_exp_dev'],
+            'adr_serv_bd_dev' => $validatedData['adr_serv_bd_dev'],
+            'sys_exp_bd_dev' => $validatedData['sys_exp_bd_dev'],
+            'lang_deve_dev' => $validatedData['lang_deve_dev'],
+            'critical_dev' => $this->cleanCriticalData($validatedData['critical_dev'] ?? []),
+            'statut_dev' => $validatedData['statut_dev'],
 
             // PROD
-            'env_prod' => $request->env_prod,
-            'adr_serv_prod' => $request->adr_serv_prod,
-            'sys_exp_prod' => $request->sys_exp_prod,
-            'adr_serv_bd_prod' => $request->adr_serv_bd_prod,
-            'sys_exp_bd_prod' => $request->sys_exp_bd_prod,
-            'lang_deve_prod' => $request->lang_deve_prod,
-            'critical_prod' => json_encode($request->input('critical_prod', [])),
-            'statut_prod' => $request->statut_prod,
+            'env_prod' => $validatedData['env_prod'],
+            'adr_serv_prod' => $validatedData['adr_serv_prod'],
+            'sys_exp_prod' => $validatedData['sys_exp_prod'],
+            'adr_serv_bd_prod' => $validatedData['adr_serv_bd_prod'],
+            'sys_exp_bd_prod' => $validatedData['sys_exp_bd_prod'],
+            'lang_deve_prod' => $validatedData['lang_deve_prod'],
+            'critical_prod' => $this->cleanCriticalData($validatedData['critical_prod'] ?? []),
+            'statut_prod' => $validatedData['statut_prod'],
 
             // TEST
-            'env_test' => $request->env_test,
-            'adr_serv_test' => $request->adr_serv_test,
-            'sys_exp_test' => $request->sys_exp_test,
-            'adr_serv_bd_test' => $request->adr_serv_bd_test,
-            'sys_exp_bd_test' => $request->sys_exp_bd_test,
-            'lang_deve_test' => $request->lang_deve_test,
-            'critical_test' => json_encode($request->input('critical_test', [])),
-            'statut_test' => $request->statut_test,
+            'env_test' => $validatedData['env_test'],
+            'adr_serv_test' => $validatedData['adr_serv_test'],
+            'sys_exp_test' => $validatedData['sys_exp_test'],
+            'adr_serv_bd_test' => $validatedData['adr_serv_bd_test'],
+            'sys_exp_bd_test' => $validatedData['sys_exp_bd_test'],
+            'lang_deve_test' => $validatedData['lang_deve_test'],
+            'critical_test' => $this->cleanCriticalData($validatedData['critical_test'] ?? []),
+            'statut_test' => $validatedData['statut_test'],
         ];
-
-
 
         try {
             DB::table('catalogues')->insert($data);
 
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Application ajoutée avec succès.'
-                ]);
-            }
-
-            return redirect()->back()->with('success', 'Application ajoutée avec succès.');
+            return $request->ajax()
+                ? response()->json(['success' => true, 'message' => 'Application créée avec succès.'])
+                : redirect()->back()->with('success', 'Application créée avec succès.');
         } catch (\Exception $e) {
-            Log::error('Erreur insertion catalogue: ' . $e->getMessage());
+            Log::error('Erreur création catalogue: ' . $e->getMessage());
 
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Erreur lors de l\'ajout de l\'application.'
-                ], 500);
-            }
-
-            return redirect()->back()->with('error', 'Erreur lors de l\'ajout de l\'application.');
+            return $request->ajax()
+                ? response()->json(['success' => false, 'message' => 'Erreur lors de la création.'], 500)
+                : redirect()->back()->with('error', 'Erreur lors de la création.');
         }
     }
 
 
-    /**
-     * Récupère les détails d'une application spécifique
-     */
-    public function getAppDetails($id)
-    {
-        $app = DB::connection('mysql')->table('catalogues')->find($id);
-
-        if (!$app) {
-            return response()->json(['error' => 'Application non trouvée'], 404);
-        }
-
-        return response()->json($app);
-    }
-
-    /**
-     * Met à jour une application existante
-     */
 
     public function editCatalogue($id)
     {
@@ -283,7 +259,7 @@ class CatalogueController extends Controller
 
     public function updateCatalogue(Request $request, $id)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'app_name' => 'required|string|max:255',
             'desc_app' => 'nullable|string|max:255',
 
@@ -325,43 +301,45 @@ class CatalogueController extends Controller
             'statut_test' => 'nullable|string|max:255',
         ]);
 
+        // Nettoyage des doublons avant encodage
         $data = [
-            'app_name' => $request->app_name,
-            'desc_app' => $request->desc_app,
-            'url_app' => $request->url_app,
-            'url_doc' => $request->url_doc,
-            'url_git' => $request->url_git,
+            'app_name' => $validatedData['app_name'],
+            'desc_app' => $validatedData['desc_app'],
+            'url_app' => $validatedData['url_app'],
+            'url_doc' => $validatedData['url_doc'],
+            'url_git' => $validatedData['url_git'],
 
             // DEV
-            'env_dev' => $request->env_dev,
-            'adr_serv_dev' => $request->adr_serv_dev,
-            'sys_exp_dev' => $request->sys_exp_dev,
-            'adr_serv_bd_dev' => $request->adr_serv_bd_dev,
-            'sys_exp_bd_dev' => $request->sys_exp_bd_dev,
-            'lang_deve_dev' => $request->lang_dev, // Changé de lang_deve_dev à lang_dev
-            'critical_dev' => json_encode($request->input('critical_dev', [])),
-            'statut_dev' => $request->statut_dev,
+            'env_dev' => $validatedData['env_dev'],
+            'adr_serv_dev' => $validatedData['adr_serv_dev'],
+            'sys_exp_dev' => $validatedData['sys_exp_dev'],
+            'adr_serv_bd_dev' => $validatedData['adr_serv_bd_dev'],
+            'sys_exp_bd_dev' => $validatedData['sys_exp_bd_dev'],
+            'lang_deve_dev' => $validatedData['lang_deve_dev'],
+            'critical_dev' => $this->cleanCriticalData($validatedData['critical_dev'] ?? []),
+            'statut_dev' => $validatedData['statut_dev'],
 
             // PROD
-            'env_prod' => $request->env_prod,
-            'adr_serv_prod' => $request->adr_serv_prod,
-            'sys_exp_prod' => $request->sys_exp_prod,
-            'adr_serv_bd_prod' => $request->adr_serv_bd_prod,
-            'sys_exp_bd_prod' => $request->sys_exp_bd_prod,
-            'lang_deve_prod' => $request->lang_dev, // Changé de lang_deve_prod à lang_dev
-            'critical_prod' => json_encode($request->input('critical_prod', [])),
-            'statut_prod' => $request->statut_prod,
+            'env_prod' => $validatedData['env_prod'],
+            'adr_serv_prod' => $validatedData['adr_serv_prod'],
+            'sys_exp_prod' => $validatedData['sys_exp_prod'],
+            'adr_serv_bd_prod' => $validatedData['adr_serv_bd_prod'],
+            'sys_exp_bd_prod' => $validatedData['sys_exp_bd_prod'],
+            'lang_deve_prod' => $validatedData['lang_deve_prod'],
+            'critical_prod' => $this->cleanCriticalData($validatedData['critical_prod'] ?? []),
+            'statut_prod' => $validatedData['statut_prod'],
 
             // TEST
-            'env_test' => $request->env_test,
-            'adr_serv_test' => $request->adr_serv_test,
-            'sys_exp_test' => $request->sys_exp_test,
-            'adr_serv_bd_test' => $request->adr_serv_bd_test,
-            'sys_exp_bd_test' => $request->sys_exp_bd_test,
-            'lang_deve_test' => $request->lang_dev, // Changé de lang_deve_test à lang_dev
-            'critical_test' => json_encode($request->input('critical_test', [])),
-            'statut_test' => $request->statut_test,
+            'env_test' => $validatedData['env_test'],
+            'adr_serv_test' => $validatedData['adr_serv_test'],
+            'sys_exp_test' => $validatedData['sys_exp_test'],
+            'adr_serv_bd_test' => $validatedData['adr_serv_bd_test'],
+            'sys_exp_bd_test' => $validatedData['sys_exp_bd_test'],
+            'lang_deve_test' => $validatedData['lang_deve_test'],
+            'critical_test' => $this->cleanCriticalData($validatedData['critical_test'] ?? []),
+            'statut_test' => $validatedData['statut_test'],
         ];
+
 
         try {
             DB::table('catalogues')->where('id', $id)->update($data);
@@ -386,6 +364,21 @@ class CatalogueController extends Controller
 
             return redirect()->back()->with('error', 'Erreur lors de la mise à jour de l\'application.');
         }
+    }
+
+
+
+    protected function cleanCriticalData(array $data): string
+    {
+        // Supprime les doublons, valeurs vides et espaces superflus
+        $cleaned = array_unique(
+            array_filter(
+                array_map('trim', $data),
+                fn($item) => !empty($item)
+            )
+        );
+
+        return json_encode(array_values($cleaned)); // Réindexe le tableau
     }
 
 

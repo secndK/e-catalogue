@@ -270,7 +270,7 @@
                                         name="sys_exp_bd_dev">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="lang_deve_dev" class="form-label">Langage</label>
+                                    <label for="lang_deve_dev" class="form-label">Langage de programation</label>
                                     <input type="text" class="form-control" id="lang_deve_dev" name="lang_deve_dev">
                                 </div>
                                 <div class="col-md-12">
@@ -319,7 +319,7 @@
                                         name="sys_exp_bd_test">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="lang_deve_test" class="form-label">Langage</label>
+                                    <label for="lang_deve_test" class="form-label">Langage de programation</label>
                                     <input type="text" class="form-control" id="lang_deve_test"
                                         name="lang_deve_test">
                                 </div>
@@ -367,7 +367,7 @@
                                         name="sys_exp_bd_prod">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="lang_deve_prod" class="form-label">Langage</label>
+                                    <label for="lang_deve_prod" class="form-label">Langage de programation</label>
                                     <input type="text" class="form-control" id="lang_deve_prod"
                                         name="lang_deve_prod">
                                 </div>
@@ -487,7 +487,7 @@
                                         name="sys_exp_bd_dev">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="edit_lang_deve_dev" class="form-label">Langage</label>
+                                    <label for="edit_lang_deve_dev" class="form-label">Langage de programation</label>
                                     <input type="text" class="form-control" id="edit_lang_deve_dev"
                                         name="lang_deve_dev">
                                 </div>
@@ -538,7 +538,7 @@
                                         name="sys_exp_bd_test">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="edit_lang_deve_test" class="form-label">Langage</label>
+                                    <label for="edit_lang_deve_test" class="form-label">Langage de programation</label>
                                     <input type="text" class="form-control" id="edit_lang_deve_test"
                                         name="lang_deve_test">
                                 </div>
@@ -589,7 +589,7 @@
                                         name="sys_exp_bd_prod">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="edit_lang_deve_prod" class="form-label">Langage</label>
+                                    <label for="edit_lang_deve_prod" class="form-label">Langage de programation</label>
                                     <input type="text" class="form-control" id="edit_lang_deve_prod"
                                         name="lang_deve_prod">
                                 </div>
@@ -874,34 +874,34 @@
 
                 <!-- Informations générales -->
                 ${app.url_app ? `
-                    <div class="d-flex align-items-center mb-2">
-                        <i class="bi bi-card-text me-2 text-muted"></i>
-                        <small class="text-muted text-truncate">${app.url_app}</small>
-                    </div>
-                    ` : ''}
+                                                                                                                    <div class="d-flex align-items-center mb-2">
+                                                                                                                        <i class="bi bi-card-text me-2 text-muted"></i>
+                                                                                                                        <small class="text-muted text-truncate">${app.url_app}</small>
+                                                                                                                    </div>
+                                                                                                                    ` : ''}
 
                 <!-- Environnements -->
                 <div class="environments-container mb-2">
                     ${app.env_prod ? `
-                        <div class="d-flex align-items-center mb-1">
-                            <span class="badge bg-success me-2">PROD</span>
-                            <small class="text-muted">${app.adr_serv_prod || ''}</small>
-                        </div>
-                        ` : ''}
+                                                                                                                        <div class="d-flex align-items-center mb-1">
+                                                                                                                            <span class="badge bg-success me-2">PROD</span>
+                                                                                                                            <small class="text-muted">${app.adr_serv_prod || ''}</small>
+                                                                                                                        </div>
+                                                                                                                        ` : ''}
 
                     ${app.env_test ? `
-                        <div class="d-flex align-items-center mb-1">
-                            <span class="badge bg-warning text-dark me-2">TEST</span>
-                            <small class="text-muted">${app.adr_serv_test || ''}</small>
-                        </div>
-                        ` : ''}
+                                                                                                                        <div class="d-flex align-items-center mb-1">
+                                                                                                                            <span class="badge bg-warning text-dark me-2">TEST</span>
+                                                                                                                            <small class="text-muted">${app.adr_serv_test || ''}</small>
+                                                                                                                        </div>
+                                                                                                                        ` : ''}
 
                     ${app.env_dev ? `
-                        <div class="d-flex align-items-center mb-1">
-                            <span class="badge bg-info text-dark me-2">DEV</span>
-                            <small class="text-muted">${app.adr_serv_dev || ''}</small>
-                        </div>
-                        ` : ''}
+                                                                                                                        <div class="d-flex align-items-center mb-1">
+                                                                                                                            <span class="badge bg-info text-dark me-2">DEV</span>
+                                                                                                                            <small class="text-muted">${app.adr_serv_dev || ''}</small>
+                                                                                                                        </div>
+                                                                                                                        ` : ''}
                 </div>
             </div>
         </div>
@@ -939,11 +939,7 @@
                         <i class="bi bi-collection text-muted" style="font-size: 3rem;"></i>
                         <h4 class="text-muted mt-3">Bienvenue sur le catalogue</h4>
                         <p class="text-muted">Utilisez la barre de recherche pour trouver les applications du catalogue</p>
-                        <div class="mt-4">
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createAppModal">
-                                <i class="bi bi-plus-circle me-2"></i>Ajouter une application
-                            </button>
-                        </div>
+
                     </div>
                 </div>`;
 
@@ -986,11 +982,19 @@
                         try {
                             const critArray = typeof critical === 'string' ? JSON.parse(critical) :
                                 critical;
-                            return Array.isArray(critArray) ? critArray.join(', ') : critical;
+
+                            if (Array.isArray(critArray)) {
+                                return critArray.map(item =>
+                                    `<span class="badge bg-danger me-1">${item}</span>`
+                                ).join(' ');
+                            }
+
+                            return `<span class="badge bg-danger">${critical}</span>`;
                         } catch {
-                            return critical;
+                            return `<span class="badge bg-danger">${critical}</span>`;
                         }
                     };
+
 
                     // Génération du contenu
                     const detailsBody = document.getElementById('appDetailsContent');
@@ -1008,9 +1012,9 @@
                 ${row("OS Serveur", app.sys_exp_dev, 'bi-cpu')}
                 ${row("Adresse BD", app.adr_serv_bd_dev, 'bi-database')}
                 ${row("OS BD", app.sys_exp_bd_dev, 'bi-hdd')}
-                ${row("Langage", app.lang_dev || app.lang_deve_dev, 'bi-code-slash')}
-                ${row("Criticité", formatCritical(app.critical_dev), 'bi-exclamation-triangle')}
-                ${row("Statut", formatCritical(app.statut_dev), 'bi-triangle')}
+                ${row("Langage de programation", app.lang_dev || app.lang_deve_dev, 'bi-code-slash')}
+                ${row("Service critique", formatCritical(app.critical_dev), 'bi-exclamation-triangle')}
+                ${row("Statut", app.statut_dev, 'bi-triangle')}
 
                 ${section('Environnement Test', 'bi-bug')}
                 ${row("Nom environnement", app.env_test, 'bi-tag')}
@@ -1018,9 +1022,9 @@
                 ${row("OS Serveur", app.sys_exp_test, 'bi-cpu')}
                 ${row("Adresse BD", app.adr_serv_bd_test, 'bi-database')}
                 ${row("OS BD", app.sys_exp_bd_test, 'bi-hdd')}
-                ${row("Langage", app.lang_dev || app.lang_deve_test, 'bi-code-slash')}
-                ${row("Criticité", formatCritical(app.critical_test), 'bi-exclamation-triangle')}
-                ${row("Statut", formatCritical(app.statut_test), 'bi-triangle')}
+                ${row("Langage de programation", app.lang_dev || app.lang_deve_test, 'bi-code-slash')}
+                ${row("Service Critique", formatCritical(app.critical_test), 'bi-exclamation-triangle')}
+                ${row("Statut", app.statut_test, 'bi-triangle')}
 
                 ${section('Environnement Production', 'bi-check-circle')}
                 ${row("Nom environnement", app.env_prod, 'bi-tag')}
@@ -1028,9 +1032,9 @@
                 ${row("OS Serveur", app.sys_exp_prod, 'bi-cpu')}
                 ${row("Adresse BD", app.adr_serv_bd_prod, 'bi-database')}
                 ${row("OS BD", app.sys_exp_bd_prod, 'bi-hdd')}
-                ${row("Langage", app.lang_dev || app.lang_deve_prod, 'bi-code-slash')}
-                ${row("Criticité", formatCritical(app.critical_prod), 'bi-exclamation-triangle')}
-                ${row("Statut", formatCritical(app.statut_prod), 'bi-triangle')}
+                ${row("Langage de programation", app.lang_dev || app.lang_deve_prod, 'bi-code-slash')}
+                ${row("Service critique", formatCritical(app.critical_prod), 'bi-exclamation-triangle')}
+                ${row("Statut", app.statut_prod, 'bi-triangle')}
             `;
                 }
             });
@@ -1128,6 +1132,523 @@
                         };
                     });
             }
+
+
+            //creer les donner
+            if (createForm) {
+                // Initialisation des Select2 pour les champs critiques
+                $(document).ready(function() {
+                    $('.select-tags').select2({
+                        tags: true,
+                        tokenSeparators: [','],
+                        width: '100%',
+                        placeholder: 'Sélectionnez ou ajoutez des tags',
+                        allowClear: true
+                    });
+                });
+
+                createForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    // Désactiver le bouton de soumission
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML =
+                        '<i class="bi bi-hourglass-split me-1"></i> Enregistrement...';
+
+                    // Afficher un loading pendant la requête
+                    Swal.fire({
+                        title: 'Création en cours...',
+                        text: 'Veuillez patienter',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    // Récupérer les données des Select2
+                    const formData = new FormData(this);
+                    const criticalFields = ['critical_dev', 'critical_test', 'critical_prod'];
+
+                    criticalFields.forEach(field => {
+                        const selectElement = $(`#${field}`);
+                        if (selectElement.length) {
+                            const selectedValues = selectElement.select2('val');
+                            if (selectedValues && selectedValues.length > 0) {
+                                // Supprimer l'ancienne valeur avant d'ajouter les nouvelles
+                                formData.delete(field + '[]');
+                                selectedValues.forEach(val => {
+                                    formData.append(field + '[]', val);
+                                });
+                            }
+                        }
+                    });
+
+                    fetch(this.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => {
+                            return response.json().then(data => ({
+                                status: response.status,
+                                ok: response.ok,
+                                data: data
+                            }));
+                        })
+                        .then(({
+                            status,
+                            ok,
+                            data
+                        }) => {
+                            if (ok && data.success) {
+                                // Fermer le modal d'abord
+                                const modal = bootstrap.Modal.getInstance(document
+                                    .getElementById('createAppModal'));
+                                modal.hide();
+                                this.reset();
+
+                                // Réinitialiser les Select2
+                                $('.select-tags').val(null).trigger('change');
+
+                                // Afficher SweetAlert de succès avec animation
+                                Swal.fire({
+                                    title: 'Application enrégistrée avec succès !',
+                                    icon: 'success',
+                                    background: '#fff',
+                                    customClass: {
+                                        popup: 'animated fadeInUp faster'
+                                    }
+                                }).then((result) => {
+                                    // Recharger la page
+                                    location.reload();
+                                });
+                            } else {
+                                // Erreur côté serveur
+                                let errorMessage = 'Une erreur est survenue lors de la création';
+                                let errorDetails = '';
+
+                                if (status === 422 && data.errors) {
+                                    // Erreurs de validation Laravel
+                                    const errors = Object.values(data.errors).flat();
+                                    errorMessage = 'Erreurs de validation détectées';
+                                    errorDetails = '<ul class="text-left">' + errors.map(
+                                        err => `<li>${err}</li>`).join('') + '</ul>';
+                                } else if (data.message) {
+                                    errorMessage = data.message;
+                                }
+
+                                Swal.fire({
+                                    title: 'Oops... Erreur !',
+                                    html: `
+                        <div class="text-center">
+                            <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 4rem;"></i>
+                            <br><br>
+                            <strong>${errorMessage}</strong>
+                            ${errorDetails ? '<br><br>' + errorDetails : ''}
+                        </div>
+                    `,
+                                    icon: 'error',
+                                    confirmButtonText: 'Réessayer',
+                                    confirmButtonColor: '#dc3545',
+                                    background: '#fff',
+                                    customClass: {
+                                        popup: 'animated shake faster'
+                                    }
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+
+                            Swal.fire({
+                                title: 'Erreur de connexion !',
+                                html: `
+                    <div class="text-center">
+                        <i class="bi bi-wifi-off text-warning" style="font-size: 4rem;"></i>
+                        <br><br>
+                        <strong>Impossible de communiquer avec le serveur</strong>
+                        <br>
+                        <small class="text-muted">Vérifiez votre connexion internet</small>
+                    </div>
+                `,
+                                icon: 'error',
+                                confirmButtonText: 'OK',
+                                confirmButtonColor: '#dc3545',
+                                background: '#fff'
+                            });
+                        })
+                        .finally(() => {
+                            // Réactiver le bouton
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = originalText;
+                        });
+                });
+            }
+
+            // ===== ÉDITION D'APPLICATION =====
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.edit-app')) {
+                    const button = e.target.closest('.edit-app');
+                    const appId = button.dataset.appId;
+                    const editModal = new bootstrap.Modal(document.getElementById('editAppModal'));
+                    const modalBody = document.querySelector('#editAppModal .modal-body');
+                    const originalContent = modalBody.innerHTML;
+
+                    // Spinner de chargement
+                    modalBody.innerHTML = `
+            <div class="text-center py-4">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Chargement...</span>
+                </div>
+                <p class="mt-2">Chargement des données...</p>
+            </div>
+        `;
+
+                    editModal.show();
+
+                    fetch(`/catalogue/${appId}/edit`, {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                    .content
+                            }
+                        })
+                        .then(response => {
+                            if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (!data.success) throw new Error(data.message || 'Erreur inconnue');
+
+                            // Restaurer le contenu du modal
+                            modalBody.innerHTML = originalContent;
+                            const appData = data.data;
+
+                            // Remplir les champs simples
+                            const simpleFields = [
+                                'app_name', 'desc_app', 'url_app', 'url_doc', 'url_git',
+                                'env_dev', 'adr_serv_dev', 'sys_exp_dev', 'adr_serv_bd_dev',
+                                'sys_exp_bd_dev', 'lang_deve_dev', 'statut_dev',
+                                'env_prod', 'adr_serv_prod', 'sys_exp_prod', 'adr_serv_bd_prod',
+                                'sys_exp_bd_prod', 'lang_deve_prod', 'statut_prod',
+                                'env_test', 'adr_serv_test', 'sys_exp_test', 'adr_serv_bd_test',
+                                'sys_exp_bd_test', 'lang_deve_test', 'statut_test'
+                            ];
+
+                            simpleFields.forEach(field => {
+                                const element = document.getElementById(`edit_${field}`);
+                                if (element) element.value = appData[field] || '';
+                            });
+
+                            // Fonction optimisée pour initialiser Select2 sans duplication
+                            const initSelect2 = (id, values) => {
+                                const element = $(`#edit_${id}`);
+                                if (!element.length) return;
+
+                                // Nettoyage complet de Select2
+                                if (element.hasClass('select2-hidden-accessible')) {
+                                    element.select2('destroy');
+                                    element.removeClass('select2-hidden-accessible');
+                                    element.next('.select2-container').remove();
+                                }
+
+                                // Parser les valeurs
+                                let parsedValues = [];
+                                try {
+                                    if (values) {
+                                        parsedValues = typeof values === 'string' ?
+                                            JSON.parse(values || '[]') :
+                                            (Array.isArray(values) ? values : [values]);
+                                        // Supprimer les doublons
+                                        parsedValues = [...new Set(parsedValues.filter(v => v && v
+                                            .trim() !== ''))];
+                                    }
+                                } catch (e) {
+                                    console.error(`Erreur parsing ${id}:`, e);
+                                    parsedValues = [];
+                                }
+
+                                // Réinitialiser complètement le select
+                                element.empty();
+
+                                // Initialiser Select2 avec les valeurs uniques
+                                element.select2({
+                                    width: '100%',
+                                    placeholder: 'Ajouter des services',
+                                    tags: true,
+                                    tokenSeparators: [',', ' '],
+                                    data: parsedValues.map(value => ({
+                                        id: value,
+                                        text: value
+                                    }))
+                                });
+
+                                // Définir les valeurs si elles existent
+                                if (parsedValues.length > 0) {
+                                    element.val(parsedValues).trigger('change');
+                                }
+                            };
+
+                            // Initialiser les champs critiques
+                            ['critical_dev', 'critical_test', 'critical_prod'].forEach(field => {
+                                initSelect2(field, appData[field]);
+                            });
+
+                            document.getElementById('edit_app_id').value = appData.id;
+                            const form = document.getElementById('editAppForm');
+                            form.action = `/catalogue/${appData.id}`;
+                        })
+                        .catch(error => {
+                            console.error('Erreur:', error);
+                            modalBody.innerHTML = originalContent;
+                            editModal.hide();
+
+                            Swal.fire({
+                                title: 'Erreur de chargement',
+                                text: error.message,
+                                icon: 'error',
+                                confirmButtonColor: '#dc3545'
+                            });
+                        });
+                }
+            });
+
+            // ===== SOUMISSION DU FORMULAIRE MISE À JOUR =====
+            document.getElementById('editAppForm')?.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const form = e.target;
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn.innerHTML;
+
+                // Gestion optimisée des champs Select2
+                const processSelect2Field = (fieldName) => {
+                    const selectElement = $(`#edit_${fieldName}`);
+                    if (selectElement.length) {
+                        // Supprimer tous les anciens inputs cachés
+                        form.querySelectorAll(`input[name^="${fieldName}"]`).forEach(el => el.remove());
+
+                        // Récupérer les valeurs uniques
+                        const selectedValues = [...new Set(selectElement.select2('val') || [])];
+
+                        // Ajouter les nouvelles valeurs comme champs cachés
+                        selectedValues.forEach(value => {
+                            if (value && value.trim() !== '') {
+                                const hiddenInput = document.createElement('input');
+                                hiddenInput.type = 'hidden';
+                                hiddenInput.name = `${fieldName}[]`;
+                                hiddenInput.value = value;
+                                form.appendChild(hiddenInput);
+                            }
+                        });
+                    }
+                };
+
+                // Traiter tous les champs critiques
+                ['critical_dev', 'critical_test', 'critical_prod'].forEach(processSelect2Field);
+
+                // État du bouton pendant le chargement
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `
+        <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+        <span role="status">Enregistrement...</span>
+    `;
+
+                // Notification de chargement
+                Swal.fire({
+                    title: 'Mise à jour en cours',
+                    html: `
+            <div class="text-center py-3">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Chargement...</span>
+                </div>
+                <p class="mt-2">Veuillez patienter pendant la mise à jour...</p>
+            </div>
+        `,
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    backdrop: true
+                });
+
+                // Préparation des données
+                const formData = new FormData(form);
+
+                // Envoi de la requête
+                fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        }
+                    })
+                    .then(async response => {
+                        const data = await response.json();
+
+                        if (!response.ok) {
+                            if (response.status === 422) {
+                                const errors = data.errors ? Object.entries(data.errors)
+                                    .map(([field, messages]) => `${messages.join(', ')}`)
+                                    .join('\n') : data.message;
+                                throw new Error(errors || 'Erreur de validation');
+                            }
+                            throw new Error(data.message || `Erreur serveur: ${response.status}`);
+                        }
+
+                        if (!data.success) {
+                            throw new Error(data.message || 'Échec de la mise à jour');
+                        }
+
+                        return data;
+                    })
+                    .then(data => {
+                        Swal.fire({
+                            title: 'Mise à jour réussie !',
+                            text: data.message || 'Les modifications ont été enregistrées',
+                            icon: 'success',
+                            showConfirmButton: true,
+                            confirmButtonText: 'Fermer',
+                            confirmButtonColor: '#28a745',
+                            timer: 3000,
+                            timerProgressBar: true,
+                            willClose: () => {
+                                const editModal = bootstrap.Modal.getInstance(document
+                                    .getElementById('editAppModal'));
+                                editModal.hide();
+                                location.reload();
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Erreur lors de la mise à jour:', error);
+
+                        Swal.fire({
+                            title: 'Erreur lors de la mise à jour',
+                            html: `
+                    <div class="text-danger mb-3">
+                        <i class="bi bi-exclamation-triangle-fill fs-1"></i>
+                        <p class="mt-2">${error.message}</p>
+                    </div>
+                    <small class="text-muted">Vérifiez les données et réessayez</small>
+                `,
+                            icon: 'error',
+                            confirmButtonColor: '#dc3545',
+                            confirmButtonText: 'Compris'
+                        });
+                    })
+                    .finally(() => {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
+                    });
+            });
+
+
+            // ======================== SUPPRIMER UNE APPP=======================================
+            // Fonction pour supprimer une application via AJAX
+            // Gestion de la suppression d'application
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.delete-app')) {
+                    e.preventDefault();
+                    const button = e.target.closest('.delete-app');
+                    const appId = button.getAttribute('data-app-id');
+                    const appName = button.getAttribute('data-app-name') || 'cette application';
+
+                    Swal.fire({
+                        title: 'Confirmer la suppression',
+                        html: `Êtes-vous sûr de vouloir supprimer <strong>${appName}</strong> ?`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Oui, supprimer',
+                        cancelButtonText: 'Annuler',
+                        backdrop: `
+                            rgba(0,0,0,0.7)
+                            url("${window.location.origin}/images/trash-icon.png")
+                            center top
+                            no-repeat
+                        `,
+                        showClass: {
+                            popup: 'animate__animated animate__fadeInDown'
+                        },
+                        hideClass: {
+                            popup: 'animate__animated animate__fadeOutUp'
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            deleteApplication(appId);
+                        }
+                    });
+                }
+            });
+
+            // Fonction pour supprimer une application via AJAX
+            async function deleteApplication(appId) {
+                try {
+                    // Afficher un indicateur de chargement
+                    const swalInstance = Swal.fire({
+                        title: 'Suppression en cours',
+                        html: 'Veuillez patienter...',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    const response = await fetch(`/catalogue/${appId}/delete`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    // Fermer l'indicateur de chargement
+                    await swalInstance.close();
+
+                    if (response.ok && data.success) {
+                        // Afficher un message de succès
+                        Swal.fire({
+                            title: 'Supprimé !',
+                            text: data.message || 'Application supprimée avec succès',
+                            icon: 'success',
+                            confirmButtonColor: '#28a745',
+                            timer: 2000,
+                            timerProgressBar: true,
+                            showConfirmButton: false
+                        }).then(() => {
+                            // Recharger la page ou actualiser dynamiquement le contenu
+                            location.reload();
+                        });
+                    } else {
+                        throw new Error(data.message || 'Erreur lors de la suppression');
+                    }
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    Swal.fire({
+                        title: 'Erreur !',
+                        text: error.message,
+                        icon: 'error',
+                        confirmButtonColor: '#d33'
+                    });
+                }
+            }
+
+
+
 
             // Fonction pour vider l'historique avec SweetAlert2
             function clearAllRecentSearches() {

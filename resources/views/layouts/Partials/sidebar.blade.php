@@ -8,11 +8,15 @@
                 Menu Principal
             </li>
             <li class="sidebar-item">
-                <a class="sidebar-link" href="{{ route('catalogue') }}" data-bs-toggle="modal"
-                    data-bs-target="#createAppModal">
-                    <i class="bi bi-plus-circle-fill"></i>
-                    <span class="align-middle">Nouvelle Application </span>
-                </a>
+                @auth
+                    <a class="sidebar-link" href="{{ route('catalogue') }}" data-bs-toggle="modal"
+                        data-bs-target="#createAppModal">
+                        <i class="bi bi-plus-circle-fill"></i>
+                        <span class="align-middle">Nouvelle Application </span>
+                    </a>
+
+                @endauth
+
             </li>
         </ul>
         <div class="sidebar-cta">
